@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20;
 
 import {ERC20} from "solmate/tokens/ERC20.sol";
-import {Plugin} from "@1inch/token-plugins/contracts/Plugin.sol";
-import {IERC20Plugins} from "@1inch/token-plugins/contracts/interfaces/IERC20Plugins.sol";
+import {Plugin} from "token-plugins/Plugin.sol";
+import {IERC20Plugins} from "token-plugins/interfaces/IERC20Plugins.sol";
 import {IParticipationPlugin} from "./interfaces/IReputationPlugin.sol";
 import "forge-std/console.sol";
 

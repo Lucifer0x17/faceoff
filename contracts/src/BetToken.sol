@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {ERC20} from "solmate/tokens/ERC20.sol";
-import {ERC20Plugins} from "@1inch/token-plugins/contracts/ERC20Plugins.sol";
+import {ERC20Plugins} from "token-plugins/ERC20Plugins.sol";
 
 contract BetToken is ERC20Plugins {
     constructor(string memory name, string memory symbol, uint256 maxPluginsPerAccount, uint256 pluginCallGasLimit)
