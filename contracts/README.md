@@ -2,8 +2,8 @@
 
 | Contract                                   | Address                                      |
 | ------------------------------------------ | -------------------------------------------- |
-| BasicUSDC                                  | 0x75d18e3eBdb7F91E5FA0a14eeb88E5f7225A013e   |
-| DAB                                        | 0xf98AA375a4dA1E26a5Ac173B4D4E47Fadd999D8C   |
+| BasicUSDC                                  | 0x286D526BE458F223E30dfDF3463720bdeC374792   |
+| DAB                                        | 0x3ED17683F200Be0BDBf13f34254d2c639AEe1F2F   |
 | staticMerkleRootMultisigIsmFactory         | "0x997997CCEf8ce335A0D51f535BDF750641d6Cb7E" |
 | staticMessageIdMultisigIsmFactory          | "0x7006e93468d4fA4c5f2d968f8aB667d73C0dCdBb" |
 | staticAggregationIsmFactory                | "0xFA9d7C3C5ab6A78006b43182AD87D80aeBB8efDf" |

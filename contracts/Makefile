@@ -87,20 +87,17 @@ endif
 
 # Commands for Local
 
-deployDAB:
-	@forge script script/DeployDAB.s.sol:DeployDAB $(NETWORK_ARGS)
-	
 deployBasicUSDC: 
 	@forge script script/DeployBasicUSDC.s.sol:DeployBasicUSDC $(NETWORK_ARGS)
 
-deployTreasury: 
-	@forge script script/DeployTreasury.s.sol:DeployTreasury $(NETWORK_ARGS)
-
-mintBasicUSDCToTreasury:
-	@forge script script/interactions/BasicUSDC_i.s.sol:MintUSDCToTreasuryContracts $(NETWORK_ARGS)
+deployDAB:
+	@forge script script/DeployDAB.s.sol:DeployDAB $(NETWORK_ARGS)
 
 mintUSDCToAddress:
-	@forge script script/interactions/BasicUSDC_i.s.sol:MintUSDCToAddress $(NETWORK_ARGS)
+	@forge script script/interactions/BasicUSDC_i.s.sol:MintUSDC $(NETWORK_ARGS)
+
+playSlot:
+	@forge script script/interactions/Flow_DAB_i.s.sol:PlaySlot $(NETWORK_ARGS)
 
 approveUSDCToTreasury:
 	@forge script script/interactions/BasicUSDC_i.s.sol:ApproveUSDCToTreasury $(NETWORK_ARGS)

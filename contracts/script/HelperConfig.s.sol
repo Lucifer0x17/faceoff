@@ -6,39 +6,32 @@ import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
 
 contract HelperConfig is Script {
     struct CrossChainDetails {
+        address _dab;
         address _usdc;
     }
 
+    uint256 public constant FLOW_CHAIN_ID = 545;
+    uint256 public constant MORPH_CHAIN_ID = 2810;
+    uint256 public constant USDC_DENOMINATION = 1e6;
+    uint256 public constant FEE_AMOUNT = 1e5;
+    uint256 public constant NO_OF_PROJECTS = 20;
+
     mapping(uint256 _chainId => CrossChainDetails) public chainIdToCrossChainDetails;
 
-    constructor() {
-        if (block.chainid == 545) {
-            setFlowConfigs();
-        } else if (block.chainid == 2810) {
-            setMorphConfigs();
-        } else {
-            setAnvilConfigs();
-        }
-    }
+    function getChainDetails(uint256 _chainId) public view returns (address, address) {
+        address usdc = chainIdToCrossChainDetails[_chainId]._usdc;
+        address dab = chainIdToCrossChainDetails[_chainId]._dab;
 
-    function getChainDetails(uint256 _chainId) public view returns (address) {
-        return chainIdToCrossChainDetails[_chainId]._usdc;
-    }
-
-    function setFlowConfigs() private {
-        chainIdToCrossChainDetails[545]._usdc = getBasicUSDC(block.chainid);
-    }
-
-    function setMorphConfigs() private {
-        chainIdToCrossChainDetails[2810]._usdc = getBasicUSDC(block.chainid);
-    }
-
-    function setAnvilConfigs() private {
-        chainIdToCrossChainDetails[1]._usdc = getBasicUSDC(block.chainid);
+        return (usdc, dab);
     }
 
     function getBasicUSDC(uint256 _chainId) public view returns (address) {
         address basicUSDC = DevOpsTools.get_most_recent_deployment("BasicUSDC", _chainId);
         return basicUSDC;
+    }
+
+    function getFlowDAB() public view returns (address) {
+        address dab = DevOpsTools.get_most_recent_deployment("Flow_DAB", FLOW_CHAIN_ID);
+        return dab;
     }
 }
