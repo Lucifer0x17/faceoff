@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 
 export default function Game() {
@@ -9,90 +9,110 @@ export default function Game() {
         { name: 'Angular', logo: '/angular-logo.png' },
         { name: 'Svelte', logo: '/svelte-logo.png' },
         { name: 'Next.js', logo: '/nextjs-logo.png' },
-      ]
-    const [results, setResults] = useState(Array(3).fill(projectSymbols[0]))
-    const [isSpinning, setIsSpinning] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+    ];
+    const [results, setResults] = useState(Array(3).fill(projectSymbols[0]));
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const { user } = useDynamicContext();
-    const [audioInitialized, setAudioInitialized] = useState(false)
-    const audioContext = useRef(null)
-    const slotAudio = useRef(null)
-    const winAudio = useRef(null)
-    const [prizePool, setPrizePool] = useState(10000) // Example value
-    const [timeLeft, setTimeLeft] = useState(300) // 5 minutes in seconds
+    const [audioInitialized, setAudioInitialized] = useState(false);
+    const audioContext = useRef(null);
+    const slotAudio = useRef(null);
+    const winAudio = useRef(null);
+    const [prizePool, setPrizePool] = useState(10000);
+    const [timeLeft, setTimeLeft] = useState(300);
+    const [bids, setBids] = useState([10, 10, 10]);
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 2000)
+        const timer = setTimeout(() => setIsLoading(false), 2000);
 
         const initializeAudio = () => {
             if (!audioInitialized) {
-                audioContext.current = new (window.AudioContext || window.webkitAudioContext)()
-                slotAudio.current = new Audio('/slot.wav')
-                winAudio.current = new Audio('/win.wav')
-                setAudioInitialized(true)
+                audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
+                slotAudio.current = new Audio('/slot.wav');
+                winAudio.current = new Audio('/win.wav');
+                setAudioInitialized(true);
             }
-        }
+        };
 
         const handleInteraction = () => {
-            initializeAudio()
-            document.removeEventListener('click', handleInteraction)
-        }
+            initializeAudio();
+            document.removeEventListener('click', handleInteraction);
+        };
 
-        document.addEventListener('click', handleInteraction)
+        document.addEventListener('click', handleInteraction);
 
         // Timer for countdown
         const countdownInterval = setInterval(() => {
-            setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0))
-        }, 1000)
+            setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+        }, 1000);
 
         return () => {
-            clearTimeout(timer)
-            clearInterval(countdownInterval)
-            document.removeEventListener('click', handleInteraction)
+            clearTimeout(timer);
+            clearInterval(countdownInterval);
+            document.removeEventListener('click', handleInteraction);
             if (audioContext.current) {
-                audioContext.current.close()
+                audioContext.current.close();
             }
-        }
-    }, [audioInitialized])
+        };
+    }, [audioInitialized]);
 
     const playSound = (audio) => {
         if (audio && audioInitialized) {
-            audio.currentTime = 0
-            audio.play()
+            audio.currentTime = 0;
+            audio.play();
         }
-    }
+    };
 
-    const spin = () => {
-        if (isSpinning || !user) return
-        setIsSpinning(true)
-        playSound(slotAudio.current)
+    const handleBidChange = (index, value) => {
+        const newBids = [...bids];
+        newBids[index] = Math.max(10, parseInt(value) || 0);
+        setBids(newBids);
+    };
 
-        const newResults = results.map(() => projectSymbols[0])
-        setResults(newResults)
+    const placeBid = (index) => {
+        // Here you would implement the logic to place a bid
+        console.log(`Placed bid of $${bids[index]} on slot ${index + 1}`);
+    };
 
-        const spinDuration = 5000 // 5 seconds of spinning
-        const intervalDuration = 100 // Update every 100ms for smooth animation
+    const spin = async () => {
+        if (isSpinning || !user) return;
+        setIsSpinning(true);
+        playSound(slotAudio.current);
 
-        const startTime = Date.now()
+        // Simulate a transaction of 1 dollar
+        try {
+            // Replace this with actual transaction logic
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log("Transaction of $1 successful");
+        } catch (error) {
+            console.error("Transaction failed", error);
+            setIsSpinning(false);
+            return;
+        }
+
+        const spinDuration = 5000; // 5 seconds of spinning
+        const intervalDuration = 100; // Update every 100ms for smooth animation
+
+        const startTime = Date.now();
         const spinInterval = setInterval(() => {
-            setResults(prev => prev.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]))
+            setResults(prev => prev.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]));
 
             if (Date.now() - startTime >= spinDuration) {
-                clearInterval(spinInterval)
-                const finalResults = results.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)])
-                setResults(finalResults)
-                setIsSpinning(false)
-                playSound(winAudio.current)
+                clearInterval(spinInterval);
+                const finalResults = projectSymbols.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]);
+                setResults(finalResults);
+                setIsSpinning(false);
+                playSound(winAudio.current);
             }
-        }, intervalDuration)
-    }
+        }, intervalDuration);
+    };
 
     if (isLoading) {
         return (
             <div style={styles.pageContainer}>
                 <div style={styles.loadingText}>Loading...</div>
             </div>
-        )
+        );
     }
 
     return (
@@ -107,18 +127,29 @@ export default function Game() {
             >
                 <div style={styles.reelsContainer}>
                     {results.map((result, index) => (
-                        <motion.div
-                            key={index}
-                            style={styles.reel}
-                            animate={isSpinning ? { rotateX: 360 } : { rotateX: 0 }}
-                            transition={{ duration: 0.5, repeat: isSpinning ? Infinity : 0 }}
-                        >
-                            <img
-                                src={result.logo}
-                                alt={result.name}
-                                style={styles.reelImage}
+                        <div key={index} style={styles.reelColumn}>
+                            <motion.div
+                                style={styles.reel}
+                                animate={isSpinning ? { rotateX: 360 } : { rotateX: 0 }}
+                                transition={{ duration: 0.5, repeat: isSpinning ? Infinity : 0 }}
+                            >
+                                <img
+                                    src={result.logo}
+                                    alt={result.name}
+                                    style={styles.reelImage}
+                                />
+                            </motion.div>
+                            <input
+                                type="number"
+                                min="10"
+                                value={bids[index]}
+                                onChange={(e) => handleBidChange(index, e.target.value)}
+                                style={styles.bidInput}
                             />
-                        </motion.div>
+                            <button onClick={() => placeBid(index)} style={styles.bidButton}>
+                                Bid
+                            </button>
+                        </div>
                     ))}
                 </div>
                 <div style={styles.leverContainer}>
@@ -275,5 +306,35 @@ const styles = {
         borderRadius: '10px',
         marginTop: '30px',
         textAlign: 'center',
+    },    reelColumn: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    bidInput: {
+        width: '80px',
+        height: '30px',
+        marginTop: '10px',
+        textAlign: 'center',
+        fontSize: '1rem',
+        backgroundColor: '#2a2a3a',
+        color: '#ffffff',
+        border: '2px solid #ffd700',
+        borderRadius: '5px',
+    },
+    bidButton: {
+        width: '80px',
+        height: '30px',
+        marginTop: '5px',
+        fontSize: '1rem',
+        backgroundColor: '#4a4e69',
+        color: '#ffffff',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s',
+        ':hover': {
+            backgroundColor: '#5a5e79',
+        },
     },
 };

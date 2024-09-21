@@ -36,8 +36,8 @@ const AppContent = () => {
       <div style={styles.pageContainer}>
         <img src="/logo.png" alt="logo" style={styles.logo} />
         <div style={styles.contentContainer}>
-          <h1 style={styles.title}>Crypto Slots Adventure</h1>
-          <p style={styles.subtitle}>Spin, Win, and Conquer the Blockchain!</p>
+          <h1 style={styles.title}>BetOnBuild</h1>
+          <p style={styles.subtitle}>Crypto Slot Adventure</p>
           {isLoading ? (
             <div style={styles.loadingText}>Loading...</div>
           ) : (
