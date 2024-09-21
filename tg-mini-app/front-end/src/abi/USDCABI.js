@@ -1,7 +1,7 @@
 export const UsdcContract = {
     // address: "0xc769CAf97b6b8011381f8E257c5517010a24AB6f",
     // address: "0x3Bf641b78A57153f75E40ED10F295CB04ef594A4",
-    address: "0x8505fa2cF36e7002901D3e7bce110FDE8FFA6330",
+    address: "0x8505fa2cF36e7002901D3e7bce110FDE8FFA6330", //Morph
     abi: [
         {
             type: "constructor",

@@ -13,9 +13,18 @@ const ProtectedRoute = ({ children }) => {
   const { user } = useDynamicContext();
   return user ? children : null;
 };
+const replaceNonASCII = (input) => {
+  if(!input) return
+  // Normalize to NFD (Normalization Form Decomposition) and remove accents
+  const normalized = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+  // Remove any remaining non-ASCII characters
+  const asciiOnly = normalized.replace(/[^\x00-\x7F]/g, "");
+
+  return asciiOnly;
+};
 const AppContent = () => {
-  const { user, sdkHasLoaded } = useDynamicContext();
+  const { user, sdkHasLoaded,showDynamicUserProfile } = useDynamicContext();
   const { telegramSignIn } = useTelegramLogin();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,6 +40,46 @@ const AppContent = () => {
 
     signIn();
   }, [sdkHasLoaded]);
+
+    useEffect(() => {
+      if (!user) return;
+
+      const setENSSubdomain = async () => {
+        if(!user) return
+          const userWalletAddress = user.verifiedCredentials[0]?.address
+          const userName = replaceNonASCII(user.verifiedCredentials[1]?.publicIdentifier)
+
+          const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "79712f7b-6c4d-4976-b9f4-95cd9dbee5be");
+
+        const raw = JSON.stringify({
+          "domain": "hackedbet.eth",
+          "name": userName,
+          "address": userWalletAddress,
+          "coin_types": {
+            "2147483785": userWalletAddress,
+          }
+        });
+
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow"
+        };
+
+        try {
+          const response = await fetch("https://namestone.xyz/api/public_v1/set-name", requestOptions);
+          await response.text();
+        } catch (error) {
+          console.error('Error:', error);
+        }
+        
+      };
+      setENSSubdomain();
+  }, [user]);
+
 
   if (!user) {
     return (
