@@ -1,38 +1,13 @@
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { useAuth0 } from "@auth0/auth0-react";
 
-const Home = () => {
-    const { user } = useDynamicContext();
-    const { isAuthenticated, isLoading, ...auth0} = useAuth0();
-    console.log(auth0.user)
+
+const World = () => {
+    const { loginWithRedirect } = useAuth0();
   
     return (
-      <>
-      <div>
-        {isLoading ? <div>Loading ...</div>:isAuthenticated && (
-      <div>
-        {/* <img src={auth.picture} alt={auth.name} /> */}
-        <h2>{auth0.user.sub}</h2>
-        {/* <p>{auth0.user.email}</p> */}
-      </div>
-    )}
-      </div>
       <div style={styles.pageContainer}>
-        
-        <main style={styles.mainContent}>
-          <h2 style={styles.heading}>Slot Machine</h2>
-          <p style={styles.description}>
-            Bet on Projects and Win Money!!
-          </p>
-          {user ? (
-            <button style={styles.button}>
-            </button>
-          ) : (
-            <p style={styles.connectMessage}>Please connect your wallet to continue.</p>
-          )}
-        </main>
+        <button onClick={() => loginWithRedirect()}>Log In with redirect</button>;
       </div>
-      </>
     );
 };
 
@@ -80,4 +55,4 @@ const styles = {
   },
 };
 
-export default Home;
+export default World;
