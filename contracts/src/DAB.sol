@@ -45,10 +45,7 @@ contract DAB {
     uint32 public constant BET_AMOUNT = 1_000_000;
 
     address public immutable i_USDC;
-
-    constructor(address _USDC) {
-        i_USDC = _USDC;
-    }
+    address public immutable i_BET;
 
     mapping(uint256 projectId => Project) public s_projects;
     mapping(address bettor => Bettor) public s_bettors;
@@ -56,22 +53,29 @@ contract DAB {
     uint256 public s_totalNoOfProjects;
     uint256 public s_totalNoOfWinningProjects;
 
+    constructor(address _USDC, address _BET, uint256 _s_totalNoOfProjects) {
+        i_USDC = _USDC;
+        i_BET = _BET;
+        s_totalNoOfProjects = _s_totalNoOfProjects;
+    }
+
+
     modifier checkBetAmount(uint256 _betAmt) {
-        if (_betAmt > BET_AMOUNT) {
+        if (_betAmt < BET_AMOUNT) {
             revert DAB_InvalidBetAmount();
         }
         _;
     }
 
     modifier checkFeeAmount(uint256 _playAmt) {
-        if (_playAmt > FEE_AMOUNT) {
+        if (_playAmt < FEE_AMOUNT) {
             revert DAB_InvalidFeeAmount();
         }
         _;
     }
 
     modifier checkWinnersLength(uint256[] calldata _projectIds) {
-        if (_projectIds.length == s_totalNoOfWinningProjects) {
+        if (_projectIds.length != s_totalNoOfWinningProjects) {
             revert DAB_InvalidWinnersLength();
         }
         _;
@@ -128,6 +132,14 @@ contract DAB {
         address bettor = msg.sender;
 
         _transferFundsToEscrow(_betAmt);
+
+        (bool success,) = i_BET.call(
+            abi.encodeWithSignature("mint(address,uint256)", bettor, FEE_AMOUNT)
+        );
+
+        if (!success) {
+            revert DAB_TransferFailed();
+        }
 
         s_projects[_projectId].totalCollectedAmt += _betAmt;
         s_projects[_projectId].bettors.push(bettor);
@@ -190,32 +202,29 @@ contract DAB {
         return proportion;
     }
 
-    function distributeBets(uint256[] calldata _projectIds) private {
-        // for (uint256 i = 0; i < _projectIds.length; i++) {
-        //     uint256 projectId = _projectIds[i];
-        //     uint256 totalCollectedAmt = s_projects[projectId].totalCollectedAmt;
+    function claimWinnings() external {
+        uint256 winningAmount = 0;
 
-        //     for (uint256 j = 0; j < s_projects[projectId].bettors.length; j++) {
-        //         address bettor = s_projects[projectId].bettors[j];
-        //         uint256 winnings = _calculateProportion(projectId, bettor) * totalCollectedAmt;
+        for (uint256 i = s_totalNoOfWinningProjects; i < s_projects.length; i++) {
+            uint256 winningAmount += s_projects[i].totalCollectedAmt;
+        }
 
-        //         (bool success,) = i_USDC.call(
-        //             abi.encodeWithSignature("transferFrom(address,address,uint256)", address(this), bettor, winnings)
-        //         );
+        winningAmountPerProject = winningAmount/s_totalNoOfWinningProjects;
+        
+        ProjectItem[] memory topProjects = getTopProjects();
 
-        //         if (!success) {
-        //             revert DAB_TransferFailed();
-        //         }
-        //     }
-        // }
+        uint256 finalWinAmount = 0;
 
-        // mapping(uint256 projectId => )4
+        for (uint256 i = 0; i < topProjects.length; i++){
+            finalWinAmount += (msg.sender).proportions[topProjects[i]]*(winningAmountPerProject+s_projects[i].totalCollectedAmt);
+        }
 
-        for (uint256 i = 0; i < _projectIds.length; i++) {
-            uint256 projectId = _projectIds[i];
-            for (uint256 i = 0; i < s_totalNoOfProjects; i++) {
-                if (s_projects[i].projectId == projectId) {}
-            }
+        (bool success,) = i_USDC.call(
+            abi.encodeWithSignature("transferFrom(address,address,uint256)", address(this), bettor, finalWinAmount)
+        );
+
+        if (!success) {
+            revert DAB_TransferFailed();
         }
     }
 }
