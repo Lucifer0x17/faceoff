@@ -132,7 +132,7 @@ contract Flow_DAB {
 
         emit DAB_Played();
 
-        return (_revertibleRandom(), _revertibleRandom(), _revertibleRandom());
+        return (revertibleRandom(), revertibleRandom(), revertibleRandom());
     }
 
     function placeBet(uint256 _projectId, uint256 _betAmt) external payable checkBetAmount(_betAmt) {
@@ -220,7 +220,7 @@ contract Flow_DAB {
         }
     }
 
-    function _revertibleRandom() private view returns (uint64) {
+    function revertibleRandom() public view returns (uint64) {
         // Static call to the Cadence Arch contract's revertibleRandom function
         (bool ok, bytes memory data) = CADENCE_ARCH.staticcall(abi.encodeWithSignature("revertibleRandom()"));
         require(ok, "Failed to fetch a random number through Cadence Arch");
