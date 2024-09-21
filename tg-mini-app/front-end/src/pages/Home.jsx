@@ -28,7 +28,7 @@ const Home = () => {
       
       {/* {isAuthenticated ? ( */}
         <div style={styles.content}>
-          <h1 style={styles.title}>Welcome to Hacker Bet</h1>
+          <h1 style={styles.title}>Welcome to BetOnBuild</h1>
           <p style={styles.subtitle}>Experience the thrill of blockchain gaming!</p>
           <button onClick={handlePlayClick} style={styles.playButton}>
             Let's Play!
