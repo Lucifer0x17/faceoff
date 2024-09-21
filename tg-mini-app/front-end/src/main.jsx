@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home.jsx";
+import World from "./pages/World.jsx";
 import { DynamicContextProvider, DynamicWidget, useDynamicContext, useTelegramLogin } from '@dynamic-labs/sdk-react-core';
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 const ProtectedRoute = ({ children }) => {
   console.log('location', window.location);
@@ -68,6 +70,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
   },
+  {
+    path: "/world",
+    element: <World />,
+  },
   ]);
 
 const App = () => (
@@ -78,12 +84,24 @@ const App = () => (
         walletConnectors: [EthereumWalletConnectors],
       }}
     >
+      <Auth0Provider domain="dev-8ytr3rxa7tb5zxef.us.auth0.com" 
+                      clientId="P9GTebKHMDMAOQwcNwhNxa8QuRazLI1E" 
+                      authorizationParams={{
+                        redirect_uri: window.location.origin, 
+                        audience: "https://dev-8ytr3rxa7tb5zxef.us.auth0.com/api/v2/",
+                        scope: "read:current_user update:current_user_metadata"
+                      }}>
       <AppContent />
+      </Auth0Provider>
+
     </DynamicContextProvider>
   </React.StrictMode>
 );
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(
+
+                  <App/>
+  );
 
 export default App;
 
