@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import Loader from '../components/Loader';
 
 export default function Game() {
     const projectSymbols = [
@@ -24,7 +25,7 @@ export default function Game() {
     const [bids, setBids] = useState([10, 10, 10]);
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 2000);
+        const timer = setTimeout(() => setIsLoading(false), 6000);
 
         const initializeAudio = () => {
             if (!audioInitialized) {
@@ -139,7 +140,7 @@ export default function Game() {
     if (isLoading) {
         return (
             <div style={styles.pageContainer}>
-                <div style={styles.loadingText}>Loading...</div>
+                <div style={styles.loadingText}><Loader/></div>
             </div>
         );
     }
@@ -228,6 +229,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent:"center",
         minHeight: '100vh',
         backgroundColor: '#1a1a2e',
         padding: '20px',

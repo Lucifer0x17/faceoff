@@ -1,9 +1,8 @@
-import { parseUnits } from 'viem';
 
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isEthereumWallet } from "@dynamic-labs/ethereum";
 import { useState } from 'react';
-import { approveUsdc } from '../utils/transactions';
+import { approveUsdc, playSlot } from '../utils/transactions';
 
 // const Txn = () => {
 //     const {primaryWallet} = useDynamicContext()
@@ -68,9 +67,11 @@ const Txn = () => {
         //     account: primaryWallet.address,
         //     args: [""]
         // })
-        const hash = await approveUsdc(primaryWallet)
+        // const hash = await approveUsdc(primaryWallet)
 
-        console.log("===============",hash)
+        // console.log("===============",hash)
+        const hash2 = await playSlot(primaryWallet)
+        console.log(hash2)
 
         // const transaction = {
         //     to: "0xC6310652Bf9c856d63567bFAb7aA3BAdF3999D56",
