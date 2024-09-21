@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import World from "./pages/World.jsx";
+import Game from "./pages/Game.jsx";
 import { DynamicContextProvider, DynamicWidget, useDynamicContext, useTelegramLogin } from '@dynamic-labs/sdk-react-core';
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { Auth0Provider } from "@auth0/auth0-react";
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
   {
     path: "/world",
     element: <World />,
+  },
+  {
+    path: "/game",
+    element: <Game />,
   },
   ]);
 
