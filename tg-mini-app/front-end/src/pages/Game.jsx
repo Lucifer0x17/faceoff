@@ -128,7 +128,7 @@ export default function Game() {
 
     return (
         <div style={styles.pageContainer}>
-            <h1 style={styles.title}>Crypto Slots</h1>
+            <h1 style={styles.title}>Hacker Slots</h1>
             <p style={styles.subtitle}>Bet on Projects and Win Big!</p>
             <motion.div
                 initial={{ scale: 0 }}
@@ -341,14 +341,16 @@ const styles = {
         borderRadius: '5px',
     },
     claimButton: {
-        marginTop: '20px',
-        padding: '10px 20px',
-        backgroundColor: '#4CAF50',
-        color: '#fff',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        fontSize: '16px',
+        marginTop: '30px', 
+        padding: '8px 20px',     
+        backgroundColor: '#FF6347',  
+        color: '#fff',             
+        border: 'none',              
+        borderRadius: '30px',    
+        cursor: 'pointer',         
+        fontSize: '16px',           
+        transition: 'background-color 0.3s ease', 
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', 
     },
     bidButton: {
         width: '80px',
