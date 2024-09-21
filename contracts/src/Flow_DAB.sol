@@ -143,7 +143,7 @@ contract Flow_DAB {
         return topProjects;
     }
 
-    function playSlot() external payable returns (uint64, uint64, uint64) {
+    function playSlot() external returns (uint64, uint64, uint64) {
         _collectFee();
 
         emit DAB_Played();
