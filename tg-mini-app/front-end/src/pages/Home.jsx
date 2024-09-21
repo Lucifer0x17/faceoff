@@ -3,24 +3,8 @@ import { motion } from 'framer-motion'
 import { DynamicWidget, useDynamicContext, useTelegramLogin } from '@dynamic-labs/sdk-react-core';
 
 const Home = () => {
-  
-    const { user, sdkHasLoaded } = useDynamicContext();
-      const { telegramSignIn } = useTelegramLogin();
-  const [isLoading, setIsLoading] = useState(true);
+  console.log('home rendering');
 
-  useEffect(() => {
-    if (!sdkHasLoaded) return;
-
-    const signIn = async () => {
-      if (!user) {
-        console.log(user)
-        await telegramSignIn({ forceCreateUser: true });
-      }
-      setIsLoading(false);
-    };
-
-    signIn();
-  }, [sdkHasLoaded]);
 
   
     return (
@@ -50,7 +34,7 @@ const Home = () => {
           Web3 login for <span className="text-blue-400">everyone</span>.
         </p>
 
-        {isLoading ? <>Loading ...</> : <DynamicWidget />}
+        {<DynamicWidget />}
       </div>
     </div>
     );
