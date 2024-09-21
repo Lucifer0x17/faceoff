@@ -249,14 +249,14 @@ const styles = {
         textShadow: '2px 2px #ff0000',
     },
     title: {
-        fontSize: '4rem',
+        fontSize: '27px',
         color: '#ffd700',
         textShadow: '4px 4px #ff0000',
         marginBottom: '20px',
         textAlign: 'center',
     },
     subtitle: {
-        fontSize: '1.8rem',
+        fontSize: '21px',
         color: '#00ff00',
         marginBottom: '30px',
         textAlign: 'center',
