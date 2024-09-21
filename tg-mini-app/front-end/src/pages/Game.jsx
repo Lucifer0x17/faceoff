@@ -11,6 +11,7 @@ export default function Game() {
         { name: 'Svelte', logo: '/svelte-logo.png' },
         { name: 'Next.js', logo: '/nextjs-logo.png' },
     ];
+    const [projects, setProjects] = useState([]);
     const [results, setResults] = useState(Array(3).fill(projectSymbols[0]));
     const [isSpinning, setIsSpinning] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +57,23 @@ export default function Game() {
             }
         };
     }, [audioInitialized]);
+
+    useEffect(() => {
+        fetch("http://localhost:8000/api/projects").then(
+            (response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }
+        ).then((data) => {
+            setProjects(data);
+        })
+        .catch((error) => {
+            console.log(error)
+        });
+
+    }, projects)
 
     const playSound = (audio) => {
         if (audio && audioInitialized) {
@@ -138,7 +156,7 @@ export default function Game() {
                 style={styles.slotMachine}
             >
                 <div style={styles.reelsContainer}>
-                    {results.map((result, index) => (
+                    {projects.map((result, index) => (
                         <div key={index} style={styles.reelColumn}>
                             <motion.div
                                 style={styles.reel}
@@ -146,7 +164,7 @@ export default function Game() {
                                 transition={{ duration: 0.5, repeat: isSpinning ? Infinity : 0 }}
                             >
                                 <img
-                                    src={result.logo}
+                                    src={result.image}
                                     alt={result.name}
                                     style={styles.reelImage}
                                 />
