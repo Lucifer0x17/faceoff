@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
+// import { useAuth0 } from '@auth0/auth0-react';
 import { DynamicWidget } from '@dynamic-labs/sdk-react-core';
 import WorldCoinBtn from '../components/WorldCoinBtn';
 
 const Home = () => {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  // const { user, isAuthenticated, isLoading } = useAuth0();
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -21,12 +21,12 @@ const Home = () => {
       <div style={styles.header}>
         <img src="/path-to-your-logo.png" alt="Logo" style={styles.logo} />
         <div style={styles.authWidgets}>
-          <WorldCoinBtn />
+          {/* <WorldCoinBtn /> */}
           <DynamicWidget />
         </div>
       </div>
       
-      {isAuthenticated ? (
+      {/* {isAuthenticated ? ( */}
         <div style={styles.content}>
           <h1 style={styles.title}>Welcome to Hacker Bet</h1>
           <p style={styles.subtitle}>Experience the thrill of blockchain gaming!</p>
@@ -34,11 +34,12 @@ const Home = () => {
             Let's Play!
           </button>
         </div>
-      ) : (
+      {/* ) : 
+      (
         <div style={styles.connectMessage}>
           Please connect your wallet to access the game.
         </div>
-      )}
+      )} */}
     </div>
   );
 };
