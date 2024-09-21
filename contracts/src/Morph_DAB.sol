@@ -199,22 +199,23 @@ contract DAB {
         return proportion;
     }
 
-    function claimWinnings() external {
+    function claimWinnings(uint256 _noOfWinningProjects) external {
         uint256 winningAmount = 0;
+        address bettor = msg.sender;
 
-        for (uint256 i = s_totalNoOfWinningProjects; i < s_projects.length; i++) {
+        for (uint256 i = s_totalNoOfWinningProjects; i < s_totalNoOfProjects; i++) {
             winningAmount += s_projects[i].totalCollectedAmt;
         }
 
-        winningAmountPerProject = winningAmount / s_totalNoOfWinningProjects;
+        uint256 winningAmountPerProject = winningAmount / s_totalNoOfWinningProjects;
 
-        ProjectItem[] memory topProjects = getTopProjects();
+        ProjectItem[] memory topProjects = getTopProjects(_noOfWinningProjects);
 
         uint256 finalWinAmount = 0;
 
         for (uint256 i = 0; i < topProjects.length; i++) {
-            finalWinAmount +=
-                (msg.sender).proportions[topProjects[i]] * (winningAmountPerProject + s_projects[i].totalCollectedAmt);
+            finalWinAmount += s_bettors[bettor].proportions[topProjects[i].projectId]
+                * (winningAmountPerProject + s_projects[i].totalCollectedAmt);
         }
 
         (bool success,) = i_USDC.call(

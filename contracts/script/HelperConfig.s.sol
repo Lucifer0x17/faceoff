@@ -39,5 +39,6 @@ contract HelperConfig is Script {
 
     function getBasicUSDC(uint256 _chainId) public view returns (address) {
         address basicUSDC = DevOpsTools.get_most_recent_deployment("BasicUSDC", _chainId);
+        return basicUSDC;
     }
 }

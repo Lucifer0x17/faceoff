@@ -14,7 +14,7 @@ pragma solidity 0.8.25;
 import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
 import {IMailbox} from "./interfaces/IMailbox.sol";
 
-contract DAB {
+contract Flow_DAB {
     using FixedPointMathLib for uint256;
 
     error DAB_InvalidBetAmount();
@@ -160,20 +160,21 @@ contract DAB {
 
     function claimWinnings() external payable {
         uint256 winningAmount = 0;
+        address bettor = msg.sender;
 
-        for (uint256 i = s_totalNoOfWinningProjects; i < s_projects.length; i++) {
+        for (uint256 i = s_totalNoOfWinningProjects; i < s_totalNoOfProjects; i++) {
             winningAmount += s_projects[i].totalCollectedAmt;
         }
 
-        winningAmountPerProject = winningAmount / s_totalNoOfWinningProjects;
+        uint256 winningAmountPerProject = winningAmount / s_totalNoOfWinningProjects;
 
-        ProjectItem[] memory topProjects = getTopProjects();
+        ProjectItem[] memory topProjects = getTopProjects(10);
 
         uint256 finalWinAmount = 0;
 
         for (uint256 i = 0; i < topProjects.length; i++) {
-            finalWinAmount +=
-                (msg.sender).proportions[topProjects[i]] * (winningAmountPerProject + s_projects[i].totalCollectedAmt);
+            finalWinAmount += s_bettors[bettor].proportions[topProjects[i].projectId]
+                * (winningAmountPerProject + s_projects[i].totalCollectedAmt);
         }
 
         (bool success,) = i_USDC.call(
@@ -258,7 +259,7 @@ contract DAB {
 
         HYP_SOURCE_MAILBOX.dispatch{value: fee}(DESTINATION_CHAIN_ID, recipient, body);
 
-        emit DAB_NFTMintInitialised(_bettor);
+        emit DAB_NFTMintInitialised(msg.sender);
     }
 
     // alignment preserving cast
