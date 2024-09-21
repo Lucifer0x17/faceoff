@@ -41,8 +41,8 @@ ifeq ($(findstring --network flow,$(ARGS)),--network flow)
 	NETWORK_ARGS := --rpc-url $(FLOW_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --legacy
 endif
 
-ifeq ($(findstring --network mumbai,$(ARGS)),--network mumbai)
-	NETWORK_ARGS := --rpc-url $(MUMBAI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_SCAN_API_KEY)
+ifeq ($(findstring --network morph,$(ARGS)),--network morph)
+	NETWORK_ARGS := --rpc-url $(MORPH_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --legacy
 endif
 
 ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
