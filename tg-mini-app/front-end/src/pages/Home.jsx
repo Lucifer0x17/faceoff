@@ -1,29 +1,16 @@
-import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
-import { DynamicWidget, useDynamicContext, useTelegramLogin } from '@dynamic-labs/sdk-react-core';
+
+import { useAuth0 } from '@auth0/auth0-react';
+import { DynamicWidget } from '@dynamic-labs/sdk-react-core';
+import WorldCoinBtn from '../components/WorldCoinBtn';
 
 const Home = () => {
-  
-    const { user, sdkHasLoaded } = useDynamicContext();
-      const { telegramSignIn } = useTelegramLogin();
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, isAuthenticated, isLoading } = useAuth0()
+  console.log(user, isAuthenticated, isLoading)
 
-  useEffect(() => {
-    if (!sdkHasLoaded) return;
-
-    const signIn = async () => {
-      if (!user) {
-        console.log(user)
-        await telegramSignIn({ forceCreateUser: true });
-      }
-      setIsLoading(false);
-    };
-
-    signIn();
-  }, [sdkHasLoaded]);
 
   
     return (
+      !isAuthenticated ? <WorldCoinBtn/> : (
       // <div style={styles.pageContainer}>
       //   <main style={styles.mainContent}>
       //     <h2 style={styles.heading}>Slot Machine</h2>
@@ -45,14 +32,15 @@ const Home = () => {
             <img src="/logo.png" alt="logo" />
           </div>
         </div>
+        <h3 className="text-4xl font-bold mb-4">{user?.sub}</h3>
         <h1 className="text-4xl font-bold mb-4">Onboard the world</h1>
         <p className="text-lg mb-16">
           Web3 login for <span className="text-blue-400">everyone</span>.
         </p>
 
-        {isLoading ? <>Loading ...</> : <DynamicWidget />}
+        {<DynamicWidget />}
       </div>
-    </div>
+    </div>)
     );
 };
 
