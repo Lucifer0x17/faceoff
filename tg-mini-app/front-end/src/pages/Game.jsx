@@ -76,7 +76,7 @@ export default function Game() {
             // In a real implementation, this would interact with the user's wallet
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log(`Placed bid of $${bids[index]} on slot ${index + 1}`);
-            
+
             // Update prize pool
             setPrizePool(prevPool => prevPool + bids[index]);
         } catch (error) {
@@ -164,7 +164,7 @@ export default function Game() {
                     ))}
                 </div>
                 <div style={styles.leverContainer}>
-                    <motion.div
+                    <motion.button
                         style={styles.lever}
                         whileTap={{ scale: 0.95 }}
                         onClick={spin}
@@ -174,8 +174,15 @@ export default function Game() {
                             animate={isSpinning ? { rotateZ: 45 } : { rotateZ: 0 }}
                             transition={{ duration: 0.2 }}
                         />
-                    </motion.div>
+                    </motion.button>
+                    <button
+                        style={styles.claimButton}
+                        disabled={isSpinning}
+                    >
+                        Claim Winnings
+                    </button>
                 </div>
+
             </motion.div>
             <div style={styles.infoContainer}>
                 <div style={styles.infoBox}>
@@ -317,7 +324,7 @@ const styles = {
         borderRadius: '10px',
         marginTop: '30px',
         textAlign: 'center',
-    },    reelColumn: {
+    }, reelColumn: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -332,6 +339,16 @@ const styles = {
         color: '#ffffff',
         border: '2px solid #ffd700',
         borderRadius: '5px',
+    },
+    claimButton: {
+        marginTop: '20px',
+        padding: '10px 20px',
+        backgroundColor: '#4CAF50',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '16px',
     },
     bidButton: {
         width: '80px',
