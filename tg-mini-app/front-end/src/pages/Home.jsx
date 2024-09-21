@@ -19,7 +19,8 @@ const Home = () => {
   return (
     <div style={styles.pageContainer}>
       <div style={styles.header}>
-        <img src="/path-to-your-logo.png" alt="Logo" style={styles.logo} />
+        <img src="/logo.svg" alt="Logo" style={styles.logo} />
+      
         <div style={styles.authWidgets}>
           {/* <WorldCoinBtn /> */}
           <DynamicWidget />
@@ -51,22 +52,28 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#D5D7E1',
     fontFamily: '"Press Start 2P", cursive',
     color: '#ffffff',
     padding: '20px',
     boxSizing: 'border-box',
+    backgroundImage: 'url("/bgNouns.png")', // Add your image URL here
+    backgroundSize: 'cover', // Ensures the image covers the entire container
+    backgroundPosition: 'center', // Centers the background image
+    backgroundRepeat: 'no-repeat', // Prevents the image from repeating
   },
   header: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    marginBottom: '40px',
+    marginBottom: '0px',
   },
   logo: {
-    width: '100px',
+    width: '210px',
     height: 'auto',
+    paddingBottom: "30px"
   },
   authWidgets: {
     display: 'flex',
@@ -80,20 +87,20 @@ const styles = {
     flex: 1,
   },
   title: {
-    fontSize: '3rem',
+    fontSize: '27px',
     color: '#ffd700',
     textShadow: '2px 2px #ff0000',
     marginBottom: '20px',
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: '1.5rem',
+    fontSize: '15px',
     color: '#00ff00',
     marginBottom: '30px',
     textAlign: 'center',
   },
   playButton: {
-    fontSize: '1.5rem',
+    fontSize: '18px',
     padding: '15px 30px',
     backgroundColor: '#ff4500',
     color: '#ffffff',
