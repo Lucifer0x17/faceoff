@@ -10,7 +10,7 @@ export const approveUsdc = async (primaryWallet) => {
             ...UsdcContract,
             functionName: "approve",
             account: primaryWallet.address,
-            args: [primaryWallet.address, parseUnits('10.0', 18)]
+            args: [FlowDabContract.address, parseUnits('10.0', 18)]
         })
 
         const hash = await walletClient.writeContract(request)
@@ -25,16 +25,16 @@ export const playSlot = async (primaryWallet) => {
     const publicClient = await primaryWallet.getPublicClient();
     const walletClient = await primaryWallet.getWalletClient();
     try {
-        const { request, ...rest } = await publicClient.simulateContract({
+        const { request, result } = await publicClient.simulateContract({
             ...FlowDabContract,
             functionName: "playSlot",
             account: primaryWallet.address,
         })
-        console.log(rest)
+        console.log("===>", result)
         const hash = await walletClient.writeContract(request)
         console.log(hash)
-        return hash
+        return { hash, result }
     } catch (error) {
-        console.log("Error in aprrove usdc", error)
+        console.log("Error in play slot", error)
     }
 }

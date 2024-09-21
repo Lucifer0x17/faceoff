@@ -67,9 +67,9 @@ const Txn = () => {
         //     account: primaryWallet.address,
         //     args: [""]
         // })
-        const hash = await approveUsdc(primaryWallet)
+        // const hash = await approveUsdc(primaryWallet)
 
-        console.log("===============",hash)
+        // console.log("===============",hash)
         const hash2 = await playSlot(primaryWallet)
         console.log(hash2)
 
