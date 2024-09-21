@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, wrap } from 'framer-motion';
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import Loader from '../components/Loader';
 
@@ -237,6 +237,11 @@ const styles = {
         fontFamily: '"Press Start 2P", cursive',
         color: '#ffffff',
         imageRendering: 'pixelated',
+        boxSizing: 'border-box',
+        backgroundImage: 'url("/bgNouns.png")', // Add your image URL here
+        backgroundSize: 'cover', // Ensures the image covers the entire container
+        backgroundPosition: 'center', // Centers the background image
+        backgroundRepeat: 'no-repeat', // Prevents the image from repeating
     },
     loadingText: {
         fontSize: '2rem',
@@ -319,7 +324,7 @@ const styles = {
     infoBox: {
         backgroundColor: '#4a4e69',
         borderRadius: '10px',
-        padding: '15px',
+        padding: '12px',
         border: '4px solid #ffd700',
         display: 'flex',
         flexDirection: 'column',
@@ -327,12 +332,12 @@ const styles = {
         width: '45%',
     },
     infoLabel: {
-        fontSize: '1.2rem',
+        fontSize: '12px',
         color: '#00ff00',
         marginBottom: '10px',
     },
     infoValue: {
-        fontSize: '1.8rem',
+        fontSize: '18px',
         color: '#ffd700',
         textShadow: '2px 2px #ff0000',
     },
