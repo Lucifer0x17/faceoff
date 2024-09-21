@@ -8,6 +8,9 @@ import { DynamicContextProvider, DynamicWidget, useDynamicContext, useTelegramLo
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { Auth0Provider } from "@auth0/auth0-react";
 import Txn from "./pages/Txn.jsx";
+import { headFiles } from "./utils/constants.js";
+import NounBg from "./components/NounBg.jsx";
+import "./index.css"
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useDynamicContext();
@@ -31,11 +34,12 @@ const AppContent = () => {
 
     signIn();
   }, [sdkHasLoaded]);
+  
 
   if (!user) {
     return (
       <div style={styles.pageContainer}>
-        <img src="/logo.png" alt="logo" style={styles.logo} />
+        <img src="/logo.svg" alt="logo" className="z-10" />
         <div style={styles.contentContainer}>
           <h1 style={styles.title}>Crypto Slots Adventure</h1>
           <p style={styles.subtitle}>Spin, Win, and Conquer the Blockchain!</p>
@@ -50,6 +54,7 @@ const AppContent = () => {
             Connect Wallet to Play!
           </button>
         </div>
+        {/* <NounBg/> */}
       </div>
     );
   }
@@ -109,19 +114,16 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     minHeight: '100vh',
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#D5D7E1',
     padding: '20px',
     boxSizing: 'border-box',
     fontFamily: '"Press Start 2P", cursive',
     color: '#ffffff',
-    position: 'relative',
-  },
-  logo: {
-    position: 'absolute',
-    top: '20px',
-    left: '20px',
-    width: '100px',
-    height: 'auto',
+    // position: 'relative',
+    backgroundImage: 'url("/bgNouns.png")', // Add your image URL here
+    backgroundSize: 'cover', // Ensures the image covers the entire container
+    backgroundPosition: 'center', // Centers the background image
+    backgroundRepeat: 'no-repeat', // Prevents the image from repeating
   },
   contentContainer: {
     display: 'flex',
@@ -132,14 +134,14 @@ const styles = {
     height: '100vh',
   },
   title: {
-    fontSize: '4rem',
+    fontSize: '27px',
     color: '#ffd700',
     textShadow: '4px 4px #ff0000',
     marginBottom: '20px',
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: '1.8rem',
+    fontSize: '15px',
     color: '#00ff00',
     marginBottom: '30px',
     textAlign: 'center',
@@ -153,8 +155,8 @@ const styles = {
     marginBottom: '30px',
   },
   playButton: {
-    fontSize: '1.5rem',
-    padding: '15px 30px',
+    fontSize: '12px',
+    padding: '15px 9px',
     backgroundColor: '#ff4500',
     color: '#ffffff',
     border: 'none',
@@ -164,7 +166,7 @@ const styles = {
     boxShadow: '0 0 10px rgba(255, 69, 0, 0.5)',
     fontFamily: '"Press Start 2P", cursive',
     textTransform: 'uppercase',
-    letterSpacing: '2px',
+    // letterSpacing: '2px',
     marginTop: '20px',
     '&:hover': {
       backgroundColor: '#ff6347',
