@@ -58,6 +58,9 @@ contract Flow_DAB {
 
     uint256 public s_totalNoOfProjects;
     uint256 public s_totalNoOfWinningProjects;
+    uint256[] public s_winnningProjects;
+    uint256 s_winningAmountPerProject;
+    ProjectItem[] public s_topProjects;
 
     constructor(address _USDC, uint256 _s_totalNoOfProjects) {
         i_USDC = _USDC;
@@ -78,13 +81,6 @@ contract Flow_DAB {
         _;
     }
 
-    modifier checkWinnersLength(uint256[] calldata _projectIds) {
-        if (_projectIds.length != s_totalNoOfWinningProjects) {
-            revert DAB_InvalidWinnersLength();
-        }
-        _;
-    }
-
     function getAllProjects() public view returns (ProjectItem[] memory) {
         ProjectItem[] memory projects = new ProjectItem[](s_totalNoOfProjects);
 
@@ -95,8 +91,7 @@ contract Flow_DAB {
         return projects;
     }
 
-    function getTopProjects(uint256 _noOfProjects) public returns (ProjectItem[] memory) {
-        s_totalNoOfWinningProjects = _noOfProjects;
+    function getTopProjects(uint256 _noOfProjects) internal view returns (ProjectItem[] memory) {
         ProjectItem[] memory projects = new ProjectItem[](s_totalNoOfProjects);
 
         // Populate the array with project IDs and their amounts
@@ -146,44 +141,74 @@ contract Flow_DAB {
         s_bettors[bettor].pooledAmts[_projectId] += _betAmt;
         s_bettors[bettor].proportions[_projectId] = _calculateProportion(_projectId, bettor);
 
-        s_totalNoOfProjects += 1;
-
         emit DAB_BetPlaced(_projectId, bettor, _betAmt);
     }
 
-    function claimWinnings() external payable {
-        uint256 winningAmount = 0;
-        address bettor = msg.sender;
-
-        for (uint256 i = s_totalNoOfWinningProjects; i < s_totalNoOfProjects; i++) {
-            winningAmount += s_projects[i].totalCollectedAmt;
+    function contains(uint256[] memory array, uint256 value) internal pure returns (bool) {
+        for (uint256 i = 0; i < array.length; i++) {
+            if (array[i] == value) {
+                return true;
+            }
         }
+        return false;
+    }
 
-        uint256 winningAmountPerProject = winningAmount / s_totalNoOfWinningProjects;
+    function claimWinnings() public {
+        ProjectItem[] memory topProjects = s_topProjects;
 
-        ProjectItem[] memory topProjects = getTopProjects(10);
+        for (uint256 i = 0; i < s_totalNoOfWinningProjects; i++) {
+            if (contains(s_winnningProjects, topProjects[i].projectId)) {
+                for (uint256 j = 0; j < s_projects[topProjects[i].projectId].bettors.length; j++) {
+                    address bettor = s_projects[topProjects[i].projectId].bettors[j];
+                    uint256 proportion = s_bettors[bettor].proportions[topProjects[i].projectId];
+                    uint256 winAmount = FixedPointMathLib.divWadDown(
+                        proportion * s_winningAmountPerProject, (100 * FixedPointMathLib.WAD)
+                    );
+                    uint256 pooledAmt = s_bettors[bettor].pooledAmts[topProjects[i].projectId];
 
-        uint256 finalWinAmount = 0;
+                    uint256 finalWinAmount = winAmount + pooledAmt;
 
-        for (uint256 i = 0; i < topProjects.length; i++) {
-            finalWinAmount += s_bettors[bettor].proportions[topProjects[i].projectId]
-                * (winningAmountPerProject + s_projects[i].totalCollectedAmt);
-        }
+                    (bool success,) = i_USDC.call(
+                        abi.encodeWithSignature(
+                            "transferFrom(address,address,uint256)", address(this), bettor, finalWinAmount
+                        )
+                    );
 
-        (bool success,) = i_USDC.call(
-            abi.encodeWithSignature("transferFrom(address,address,uint256)", address(this), bettor, finalWinAmount)
-        );
+                    if (!success) {
+                        revert DAB_TransferFailed();
+                    }
 
-        if (!success) {
-            revert DAB_TransferFailed();
-        }
-
-        if (finalWinAmount > 0) {
-            mintCrossChainNFT(finalWinAmount);
+                    if (winAmount > 0) {
+                        mintCrossChainNFT(winAmount);
+                    }
+                }
+            }
         }
     }
 
-    function submitWinningProjects(uint256[] calldata _projectIds) external checkWinnersLength(_projectIds) {}
+    function submitWinningProjects(uint256[] calldata _projectIds) external {
+        uint256 _noOfWinningProjects = _projectIds.length;
+
+        for (uint256 i = 0; i < _noOfWinningProjects; i++) {
+            s_winnningProjects.push(_projectIds[i]);
+        }
+        s_totalNoOfWinningProjects = _noOfWinningProjects;
+
+        ProjectItem[] memory topProjects = getTopProjects(_noOfWinningProjects);
+
+        uint256 totalAmtForDistribution = 0;
+
+        for (uint256 i = 0; i < _noOfWinningProjects; i++) {
+            if (!contains(s_winnningProjects, (topProjects[i].projectId))) {
+                totalAmtForDistribution += topProjects[i].totalCollectedAmt;
+            }
+        }
+
+        // 50% for Devs and 50% for Bidders
+        totalAmtForDistribution = totalAmtForDistribution / 2;
+
+        s_winningAmountPerProject = FixedPointMathLib.divWadDown(totalAmtForDistribution, _noOfWinningProjects);
+    }
 
     function getBettorsForProject(uint256 _projectId) external view returns (address[] memory) {
         return s_projects[_projectId].bettors;
