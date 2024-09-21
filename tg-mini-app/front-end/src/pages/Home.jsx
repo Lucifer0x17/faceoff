@@ -1,16 +1,16 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 // import { useAuth0 } from '@auth0/auth0-react';
 import { DynamicWidget } from '@dynamic-labs/sdk-react-core';
-import WorldCoinBtn from '../components/WorldCoinBtn';
+// import WorldCoinBtn from '../components/WorldCoinBtn';
 
 const Home = () => {
   // const { user, isAuthenticated, isLoading } = useAuth0();
   const navigate = useNavigate();
 
-  if (isLoading) {
-    return <div style={styles.loadingMessage}>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div style={styles.loadingMessage}>Loading...</div>;
+  // }
 
   const handlePlayClick = () => {
     navigate('/game');

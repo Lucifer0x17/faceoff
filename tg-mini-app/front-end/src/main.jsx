@@ -7,6 +7,7 @@ import Game from "./pages/Game.jsx";
 import { DynamicContextProvider, DynamicWidget, useDynamicContext, useTelegramLogin } from '@dynamic-labs/sdk-react-core';
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { Auth0Provider } from "@auth0/auth0-react";
+import Txn from "./pages/Txn.jsx";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useDynamicContext();
@@ -57,10 +58,23 @@ const AppContent = () => {
 };
 
 const router = createBrowserRouter([
-  { path: "/", element: <Home /> },
-  { path: "/world", element: <World /> },
-  { path: "/game", element: <Game /> },
-]);
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/world",
+    element: <World />,
+  },
+  {
+    path: "/game",
+    element: <Game />,
+  },
+  {
+    path: "/txn",
+    element: <Txn/>
+  }
+  ]);
 
 const App = () => (
   <React.StrictMode>
