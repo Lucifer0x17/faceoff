@@ -59,9 +59,8 @@ contract Flow_DAB {
     uint256 public s_totalNoOfProjects;
     uint256 public s_totalNoOfWinningProjects;
 
-    constructor(address _USDC, address _BET, uint256 _s_totalNoOfProjects) {
+    constructor(address _USDC, uint256 _s_totalNoOfProjects) {
         i_USDC = _USDC;
-        i_BET = _BET;
         s_totalNoOfProjects = _s_totalNoOfProjects;
     }
 
@@ -139,12 +138,6 @@ contract Flow_DAB {
         address bettor = msg.sender;
 
         _transferFundsToEscrow(_betAmt);
-
-        (bool success,) = i_BET.call(abi.encodeWithSignature("mint(address,uint256)", bettor, FEE_AMOUNT));
-
-        if (!success) {
-            revert DAB_TransferFailed();
-        }
 
         s_projects[_projectId].totalCollectedAmt += _betAmt;
         s_projects[_projectId].bettors.push(bettor);

@@ -12,7 +12,7 @@ contract DeployDAB is Script {
 
     function deployDAB(address _usdc) private returns (address) {
         vm.startBroadcast();
-        Flow_DAB dab = new Flow_DAB(_usdc, _usdc, noOfProjects);
+        Flow_DAB dab = new Flow_DAB(_usdc, noOfProjects);
         vm.stopBroadcast();
         return address(dab);
     }
