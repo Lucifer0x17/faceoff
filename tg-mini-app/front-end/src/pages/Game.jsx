@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import Loader from '../components/Loader';
 
 export default function Game() {
     const projectSymbols = [
@@ -23,7 +24,7 @@ export default function Game() {
     const [bids, setBids] = useState([10, 10, 10]);
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 2000);
+        const timer = setTimeout(() => setIsLoading(false), 6000);
 
         const initializeAudio = () => {
             if (!audioInitialized) {
@@ -121,14 +122,14 @@ export default function Game() {
     if (isLoading) {
         return (
             <div style={styles.pageContainer}>
-                <div style={styles.loadingText}>Loading...</div>
+                <div style={styles.loadingText}><Loader/></div>
             </div>
         );
     }
 
     return (
         <div style={styles.pageContainer}>
-            <h1 style={styles.title}>Crypto Slots</h1>
+            <h1 style={styles.title}>Hacker Slots</h1>
             <p style={styles.subtitle}>Bet on Projects and Win Big!</p>
             <motion.div
                 initial={{ scale: 0 }}
@@ -210,6 +211,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent:"center",
         minHeight: '100vh',
         backgroundColor: '#1a1a2e',
         padding: '20px',
@@ -341,14 +343,16 @@ const styles = {
         borderRadius: '5px',
     },
     claimButton: {
-        marginTop: '20px',
-        padding: '10px 20px',
-        backgroundColor: '#4CAF50',
-        color: '#fff',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        fontSize: '16px',
+        marginTop: '30px', 
+        padding: '8px 20px',     
+        backgroundColor: '#FF6347',  
+        color: '#fff',             
+        border: 'none',              
+        borderRadius: '30px',    
+        cursor: 'pointer',         
+        fontSize: '16px',           
+        transition: 'background-color 0.3s ease', 
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', 
     },
     bidButton: {
         width: '80px',
