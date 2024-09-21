@@ -14,13 +14,14 @@ contract DeployDAB is Script {
         vm.startBroadcast();
         DAB dab = new DAB(_usdc);
         vm.stopBroadcast();
-
         return address(dab);
     }
 
     function deployDABusingConfigs() private {
         HelperConfig helperConfig = new HelperConfig();
         address usdc = helperConfig.getChainDetails(block.chainid);
+
+        deployDAB(usdc);
     }
 
     function run() public {

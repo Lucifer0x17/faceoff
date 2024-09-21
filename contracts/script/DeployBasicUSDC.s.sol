@@ -6,11 +6,9 @@ import {console} from "forge-std/console.sol";
 import {BasicUSDC} from "../src/BasicUSDC.sol";
 
 contract DeployBasicUSDC is Script {
-    bytes32 public constant SALT = bytes32("BasicUSDC");
-
     function run() public {
         vm.startBroadcast();
-        BasicUSDC usdc = new BasicUSDC{salt: SALT}();
+        BasicUSDC usdc = new BasicUSDC();
         vm.stopBroadcast();
         console.log(address(usdc));
     }

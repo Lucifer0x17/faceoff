@@ -37,8 +37,8 @@ anvil :; anvil -m 'test test test test test test test test test test test junk' 
 
 NETWORK_ARGS := --rpc-url http://localhost:8545 --private-key $(DEFAULT_ANVIL_KEY) --broadcast
 
-ifeq ($(findstring --network goerli,$(ARGS)),--network flow)
-	NETWORK_ARGS := --rpc-url $(FLOW_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY)
+ifeq ($(findstring --network flow,$(ARGS)),--network flow)
+	NETWORK_ARGS := --rpc-url $(FLOW_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --legacy
 endif
 
 ifeq ($(findstring --network mumbai,$(ARGS)),--network mumbai)
@@ -82,13 +82,13 @@ ifeq ($(findstring --network arbGoreli,$(ARGS)),--network arbGoreli)
 endif
 
 ifeq ($(findstring --network gnosis,$(ARGS)),--network gnosis)
-	NETWORK_ARGS := --rpc-url $(GNOSIS_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(GONSIS_SCAN_API_KEY)
+	NETWORK_ARGS := --rpc-url $(GNOSIS_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(GONSIS_SCAN_API_KEY) 
 endif
 
 # Commands for Local
 
-deployCrossChain:
-	@forge script script/deployCrossChain.s.sol:DeployCrossChain $(NETWORK_ARGS) 
+deployDAB:
+	@forge script script/DeployDAB.s.sol:DeployDAB $(NETWORK_ARGS)
 	
 deployBasicUSDC: 
 	@forge script script/DeployBasicUSDC.s.sol:DeployBasicUSDC $(NETWORK_ARGS)
