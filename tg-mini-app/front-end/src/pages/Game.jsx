@@ -4,15 +4,15 @@ import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 
 export default function Game() {
     const projectSymbols = [
-  { name: 'React', logo: '/react-logo.png' },
-  { name: 'Vue', logo: '/vue-logo.png' },
-  { name: 'Angular', logo: '/angular-logo.png' },
-  { name: 'Svelte', logo: '/svelte-logo.png' },
-  { name: 'Next.js', logo: '/nextjs-logo.png' },
-]
-    const [results, setResults] = useState(Array(3).fill(projectSymbols[0]))
-    const [isSpinning, setIsSpinning] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+        { name: 'React', logo: '/react-logo.png' },
+        { name: 'Vue', logo: '/vue-logo.png' },
+        { name: 'Angular', logo: '/angular-logo.png' },
+        { name: 'Svelte', logo: '/svelte-logo.png' },
+        { name: 'Next.js', logo: '/nextjs-logo.png' },
+    ];
+    const [results, setResults] = useState(Array(3).fill(projectSymbols[0]));
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const { user } = useDynamicContext();
     const [audioInitialized, setAudioInitialized] = useState(false);
     const audioContext = useRef(null);
@@ -69,9 +69,19 @@ export default function Game() {
         setBids(newBids);
     };
 
-    const placeBid = (index) => {
-        // Here you would implement the logic to place a bid
-        console.log(`Placed bid of $${bids[index]} on slot ${index + 1}`);
+    const placeBid = async (index) => {
+        if (!user) return;
+        try {
+            // Simulating a blockchain transaction for placing a bid
+            // In a real implementation, this would interact with the user's wallet
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log(`Placed bid of $${bids[index]} on slot ${index + 1}`);
+            
+            // Update prize pool
+            setPrizePool(prevPool => prevPool + bids[index]);
+        } catch (error) {
+            console.error("Bid placement failed", error);
+        }
     };
 
     const spin = async () => {
@@ -79,13 +89,13 @@ export default function Game() {
         setIsSpinning(true);
         playSound(slotAudio.current);
 
-        // Simulate a transaction of 1 dollar
         try {
-            // Replace this with actual transaction logic
+            // Simulating a blockchain transaction for the spin fee
+            // In a real implementation, this would interact with the user's wallet
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log("Transaction of $1 successful");
+            console.log("Spin fee transaction of $1 successful");
         } catch (error) {
-            console.error("Transaction failed", error);
+            console.error("Spin fee transaction failed", error);
             setIsSpinning(false);
             return;
         }
@@ -99,10 +109,11 @@ export default function Game() {
 
             if (Date.now() - startTime >= spinDuration) {
                 clearInterval(spinInterval);
-                const finalResults = projectSymbols.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]);
+                const finalResults = Array(3).fill().map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]);
                 setResults(finalResults);
                 setIsSpinning(false);
                 playSound(winAudio.current);
+                // Here you would check for winning combinations and update the prize pool accordingly
             }
         }, intervalDuration);
     };
