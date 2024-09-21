@@ -59,7 +59,6 @@ contract DAB {
         s_totalNoOfProjects = _s_totalNoOfProjects;
     }
 
-
     modifier checkBetAmount(uint256 _betAmt) {
         if (_betAmt < BET_AMOUNT) {
             revert DAB_InvalidBetAmount();
@@ -133,9 +132,7 @@ contract DAB {
 
         _transferFundsToEscrow(_betAmt);
 
-        (bool success,) = i_BET.call(
-            abi.encodeWithSignature("mint(address,uint256)", bettor, FEE_AMOUNT)
-        );
+        (bool success,) = i_BET.call(abi.encodeWithSignature("mint(address,uint256)", bettor, FEE_AMOUNT));
 
         if (!success) {
             revert DAB_TransferFailed();
@@ -206,17 +203,18 @@ contract DAB {
         uint256 winningAmount = 0;
 
         for (uint256 i = s_totalNoOfWinningProjects; i < s_projects.length; i++) {
-            uint256 winningAmount += s_projects[i].totalCollectedAmt;
+            winningAmount += s_projects[i].totalCollectedAmt;
         }
 
-        winningAmountPerProject = winningAmount/s_totalNoOfWinningProjects;
-        
+        winningAmountPerProject = winningAmount / s_totalNoOfWinningProjects;
+
         ProjectItem[] memory topProjects = getTopProjects();
 
         uint256 finalWinAmount = 0;
 
-        for (uint256 i = 0; i < topProjects.length; i++){
-            finalWinAmount += (msg.sender).proportions[topProjects[i]]*(winningAmountPerProject+s_projects[i].totalCollectedAmt);
+        for (uint256 i = 0; i < topProjects.length; i++) {
+            finalWinAmount +=
+                (msg.sender).proportions[topProjects[i]] * (winningAmountPerProject + s_projects[i].totalCollectedAmt);
         }
 
         (bool success,) = i_USDC.call(

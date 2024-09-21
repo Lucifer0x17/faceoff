@@ -12,6 +12,7 @@
 pragma solidity 0.8.25;
 
 import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
+import {IMailbox} from "./interfaces/IMailbox.sol";
 
 contract DAB {
     using FixedPointMathLib for uint256;
@@ -23,6 +24,7 @@ contract DAB {
 
     event DAB_Played();
     event DAB_BetPlaced(uint256 projectId, address bettor, uint256 _pooledAmt);
+    event DAB_NFTMintInitialised(address bettor);
 
     struct Bettor {
         uint256 total_pooledAmt;
@@ -43,7 +45,10 @@ contract DAB {
 
     uint32 public constant FEE_AMOUNT = 1_00_000;
     uint32 public constant BET_AMOUNT = 1_000_000;
+    uint32 public constant DESTINATION_CHAIN_ID = 2810;
     address public constant CADENCE_ARCH = 0x0000000000000000000000010000000000000001;
+    address public constant HYP_DESTINATION_MAILBOX = 0xedDfBA627f92F32EE2Fe2a8035C2a7152DE83244;
+    IMailbox public constant HYP_SOURCE_MAILBOX = IMailbox(0xAD58458d90694c0FC8cE462945bF09960426A7F5);
 
     address public immutable i_USDC;
     address public immutable i_BET;
@@ -127,7 +132,7 @@ contract DAB {
 
         emit DAB_Played();
 
-        return _revertibleRandom(), _revertibleRandom(), _revertibleRandom();
+        return (_revertibleRandom(), _revertibleRandom(), _revertibleRandom());
     }
 
     function placeBet(uint256 _projectId, uint256 _betAmt) external payable checkBetAmount(_betAmt) {
@@ -135,9 +140,7 @@ contract DAB {
 
         _transferFundsToEscrow(_betAmt);
 
-        (bool success,) = i_BET.call(
-            abi.encodeWithSignature("mint(address,uint256)", bettor, FEE_AMOUNT)
-        );
+        (bool success,) = i_BET.call(abi.encodeWithSignature("mint(address,uint256)", bettor, FEE_AMOUNT));
 
         if (!success) {
             revert DAB_TransferFailed();
@@ -153,6 +156,37 @@ contract DAB {
         s_totalNoOfProjects += 1;
 
         emit DAB_BetPlaced(_projectId, bettor, _betAmt);
+    }
+
+    function claimWinnings() external payable {
+        uint256 winningAmount = 0;
+
+        for (uint256 i = s_totalNoOfWinningProjects; i < s_projects.length; i++) {
+            winningAmount += s_projects[i].totalCollectedAmt;
+        }
+
+        winningAmountPerProject = winningAmount / s_totalNoOfWinningProjects;
+
+        ProjectItem[] memory topProjects = getTopProjects();
+
+        uint256 finalWinAmount = 0;
+
+        for (uint256 i = 0; i < topProjects.length; i++) {
+            finalWinAmount +=
+                (msg.sender).proportions[topProjects[i]] * (winningAmountPerProject + s_projects[i].totalCollectedAmt);
+        }
+
+        (bool success,) = i_USDC.call(
+            abi.encodeWithSignature("transferFrom(address,address,uint256)", address(this), bettor, finalWinAmount)
+        );
+
+        if (!success) {
+            revert DAB_TransferFailed();
+        }
+
+        if (finalWinAmount > 0) {
+            mintCrossChainNFT(finalWinAmount);
+        }
     }
 
     function submitWinningProjects(uint256[] calldata _projectIds) external checkWinnersLength(_projectIds) {}
@@ -217,29 +251,18 @@ contract DAB {
         return proportion;
     }
 
-    function claimWinnings() external {
-        uint256 winningAmount = 0;
+    function mintCrossChainNFT(uint256 _totalAmt) private {
+        bytes32 recipient = addressToBytes32(HYP_DESTINATION_MAILBOX);
+        bytes memory body = abi.encodePacked(_totalAmt);
+        uint256 fee = HYP_SOURCE_MAILBOX.quoteDispatch(DESTINATION_CHAIN_ID, recipient, body);
 
-        for (uint256 i = s_totalNoOfWinningProjects; i < s_projects.length; i++) {
-            uint256 winningAmount += s_projects[i].totalCollectedAmt;
-        }
+        HYP_SOURCE_MAILBOX.dispatch{value: fee}(DESTINATION_CHAIN_ID, recipient, body);
 
-        winningAmountPerProject = winningAmount/s_totalNoOfWinningProjects;
-        
-        ProjectItem[] memory topProjects = getTopProjects();
+        emit DAB_NFTMintInitialised(_bettor);
+    }
 
-        uint256 finalWinAmount = 0;
-
-        for (uint256 i = 0; i < topProjects.length; i++){
-            finalWinAmount += (msg.sender).proportions[topProjects[i]]*(winningAmountPerProject+s_projects[i].totalCollectedAmt);
-        }
-
-        (bool success,) = i_USDC.call(
-            abi.encodeWithSignature("transferFrom(address,address,uint256)", address(this), bettor, finalWinAmount)
-        );
-
-        if (!success) {
-            revert DAB_TransferFailed();
-        }
+    // alignment preserving cast
+    function addressToBytes32(address _addr) internal pure returns (bytes32) {
+        return bytes32(uint256(uint160(_addr)));
     }
 }
