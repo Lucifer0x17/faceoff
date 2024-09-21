@@ -3,6 +3,13 @@ import { motion } from 'framer-motion'
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 
 export default function Game() {
+    const projectSymbols = [
+  { name: 'React', logo: '/react-logo.png' },
+  { name: 'Vue', logo: '/vue-logo.png' },
+  { name: 'Angular', logo: '/angular-logo.png' },
+  { name: 'Svelte', logo: '/svelte-logo.png' },
+  { name: 'Next.js', logo: '/nextjs-logo.png' },
+]
     const [results, setResults] = useState(Array(3).fill(projectSymbols[0]))
     const [isSpinning, setIsSpinning] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
