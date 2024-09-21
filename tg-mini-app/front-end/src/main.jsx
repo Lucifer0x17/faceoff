@@ -10,18 +10,13 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import Txn from "./pages/Txn.jsx";
 
 const ProtectedRoute = ({ children }) => {
-  console.log('location', window.location);
   const { user } = useDynamicContext();
-  if (!user) {
-    return null; // Won't render the protected component if the user is not connected.
-  }
-  return children;
+  return user ? children : null;
 };
 
 const AppContent = () => {
-
-      const { user, sdkHasLoaded } = useDynamicContext();
-      const { telegramSignIn } = useTelegramLogin();
+  const { user, sdkHasLoaded } = useDynamicContext();
+  const { telegramSignIn } = useTelegramLogin();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +24,6 @@ const AppContent = () => {
 
     const signIn = async () => {
       if (!user) {
-        console.log("=============",user)
         await telegramSignIn({ forceCreateUser: true });
       }
       setIsLoading(false);
@@ -37,33 +31,29 @@ const AppContent = () => {
 
     signIn();
   }, [sdkHasLoaded]);
-  console.log("user main",user)
-  if (!user) {
-    // Show only the wallet connect button if the user is not connected
-    return (
-      // <div style={styles.centerContainer}>
-      //   <DynamicWidget />
-      //   <p>Please connect your wallet to continue.</p>
-      // </div>
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black flex flex-col items-center justify-center text-white">
-      <div className="flex flex-col items-center justify-center text-center">
-        <div className="mb-6">
-          <div className="inline-flex items-center justify-center">
-            <img src="/logo.png" alt="logo" />
-          </div>
-        </div>
-        <h1 className="text-4xl font-bold mb-4">Onboard the world</h1>
-        <p className="text-lg mb-16">
-          Web3 login for <span className="text-blue-400">everyone</span>.
-        </p>
 
-        {isLoading ? <>Loading ...</> : <DynamicWidget />}
+  if (!user) {
+    return (
+      <div style={styles.pageContainer}>
+        <img src="/logo.png" alt="logo" style={styles.logo} />
+        <div style={styles.contentContainer}>
+          <h1 style={styles.title}>Crypto Slots Adventure</h1>
+          <p style={styles.subtitle}>Spin, Win, and Conquer the Blockchain!</p>
+          {isLoading ? (
+            <div style={styles.loadingText}>Loading...</div>
+          ) : (
+            <div style={styles.widgetContainer}>
+              <DynamicWidget />
+            </div>
+          )}
+          <button style={styles.playButton} onClick={() => {}}>
+            Connect Wallet to Play!
+          </button>
+        </div>
       </div>
-    </div>
     );
   }
 
-  // Once the user is connected, show the main app content
   return <RouterProvider router={router} />;
 };
 
@@ -94,34 +84,94 @@ const App = () => (
         walletConnectors: [EthereumWalletConnectors],
       }}
     >
-      <Auth0Provider domain="dev-8ytr3rxa7tb5zxef.us.auth0.com" 
-                      clientId="P9GTebKHMDMAOQwcNwhNxa8QuRazLI1E" 
-                      authorizationParams={{
-                        redirect_uri: window.location.origin, 
-                        audience: "https://dev-8ytr3rxa7tb5zxef.us.auth0.com/api/v2/",
-                        scope: "read:current_user update:current_user_metadata"
-                      }}>
-      <AppContent />
+      <Auth0Provider 
+        domain="dev-8ytr3rxa7tb5zxef.us.auth0.com" 
+        clientId="P9GTebKHMDMAOQwcNwhNxa8QuRazLI1E" 
+        authorizationParams={{
+          redirect_uri: window.location.origin, 
+          audience: "https://dev-8ytr3rxa7tb5zxef.us.auth0.com/api/v2/",
+          scope: "read:current_user update:current_user_metadata"
+        }}
+      >
+        <AppContent />
       </Auth0Provider>
-
     </DynamicContextProvider>
   </React.StrictMode>
 );
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-
-                  <App/>
-  );
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 
 export default App;
 
 const styles = {
-  centerContainer: {
+  pageContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
     flexDirection: 'column',
-    minHeight: '100vh', // Full viewport height
-    backgroundColor: '#f0f4f8',
+    alignItems: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#1a1a2e',
+    padding: '20px',
+    boxSizing: 'border-box',
+    fontFamily: '"Press Start 2P", cursive',
+    color: '#ffffff',
+    position: 'relative',
+  },
+  logo: {
+    position: 'absolute',
+    top: '20px',
+    left: '20px',
+    width: '100px',
+    height: 'auto',
+  },
+  contentContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    height: '100vh',
+  },
+  title: {
+    fontSize: '4rem',
+    color: '#ffd700',
+    textShadow: '4px 4px #ff0000',
+    marginBottom: '20px',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: '1.8rem',
+    color: '#00ff00',
+    marginBottom: '30px',
+    textAlign: 'center',
+  },
+  loadingText: {
+    fontSize: '2rem',
+    color: '#ffd700',
+    marginBottom: '20px',
+  },
+  widgetContainer: {
+    marginBottom: '30px',
+  },
+  playButton: {
+    fontSize: '1.5rem',
+    padding: '15px 30px',
+    backgroundColor: '#ff4500',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 0 10px rgba(255, 69, 0, 0.5)',
+    fontFamily: '"Press Start 2P", cursive',
+    textTransform: 'uppercase',
+    letterSpacing: '2px',
+    marginTop: '20px',
+    '&:hover': {
+      backgroundColor: '#ff6347',
+      transform: 'scale(1.05)',
+    },
+    '&:active': {
+      transform: 'scale(0.95)',
+    },
   },
 };

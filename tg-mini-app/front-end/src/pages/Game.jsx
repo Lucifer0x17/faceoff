@@ -28,7 +28,7 @@ export default function Game() {
             if (!audioInitialized) {
                 audioContext.current = new (window.AudioContext || window.webkitAudioContext)()
                 slotAudio.current = new Audio('/slot.wav')
-                winAudio.current = new Audio('/win-sound.mp3')
+                winAudio.current = new Audio('/win.wav')
                 setAudioInitialized(true)
             }
         }
@@ -63,7 +63,28 @@ export default function Game() {
     }
 
     const spin = () => {
-        // ... (keep the existing spin logic)
+        if (isSpinning || !user) return
+        setIsSpinning(true)
+        playSound(slotAudio.current)
+
+        const newResults = results.map(() => projectSymbols[0])
+        setResults(newResults)
+
+        const spinDuration = 5000 // 5 seconds of spinning
+        const intervalDuration = 100 // Update every 100ms for smooth animation
+
+        const startTime = Date.now()
+        const spinInterval = setInterval(() => {
+            setResults(prev => prev.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]))
+
+            if (Date.now() - startTime >= spinDuration) {
+                clearInterval(spinInterval)
+                const finalResults = results.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)])
+                setResults(finalResults)
+                setIsSpinning(false)
+                playSound(winAudio.current)
+            }
+        }, intervalDuration)
     }
 
     if (isLoading) {
