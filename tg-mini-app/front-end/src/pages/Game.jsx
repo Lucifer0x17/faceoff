@@ -4,15 +4,8 @@ import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import Loader from '../components/Loader';
 
 export default function Game() {
-    const projectSymbols = [
-        { name: 'React', logo: '/react-logo.png' },
-        { name: 'Vue', logo: '/vue-logo.png' },
-        { name: 'Angular', logo: '/angular-logo.png' },
-        { name: 'Svelte', logo: '/svelte-logo.png' },
-        { name: 'Next.js', logo: '/nextjs-logo.png' },
-    ];
     const [projects, setProjects] = useState([]);
-    const [results, setResults] = useState(Array(3).fill(projectSymbols[0]));
+    const [results, setResults] = useState([]);
     const [isSpinning, setIsSpinning] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const { user } = useDynamicContext();
@@ -59,7 +52,7 @@ export default function Game() {
     }, [audioInitialized]);
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/projects").then(
+        fetch("https://7b49-223-255-254-102.ngrok-free.app/api/projects").then(
             (response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -68,12 +61,13 @@ export default function Game() {
             }
         ).then((data) => {
             setProjects(data);
+            setResults(Array(3).fill().map(() => data[Math.floor(Math.random() * data.length)]));
         })
             .catch((error) => {
                 console.log(error)
             });
 
-    }, projects)
+    }, []);
 
     const playSound = (audio) => {
         if (audio && audioInitialized) {
@@ -124,11 +118,12 @@ export default function Game() {
 
         const startTime = Date.now();
         const spinInterval = setInterval(() => {
-            setResults(prev => prev.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]));
+            setResults(prev => prev.map(() => projects[Math.floor(Math.random() * projects.length)]));
 
             if (Date.now() - startTime >= spinDuration) {
                 clearInterval(spinInterval);
-                const finalResults = Array(3).fill().map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]);
+                let random_numbers = Math.floor(Math.random() * projects.length);
+                const finalResults = Array(3).fill().map(() => projects[random_numbers]);
                 setResults(finalResults);
                 setIsSpinning(false);
                 playSound(winAudio.current);
@@ -157,7 +152,7 @@ export default function Game() {
                 style={styles.slotMachine}
             >
                 <div style={styles.reelsContainer}>
-                    {projects.map((result, index) => (
+                    {results.map((result, index) => (
                         <div key={index} style={styles.reelColumn}>
                             <motion.div
                                 style={styles.reel}
