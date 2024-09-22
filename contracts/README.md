@@ -62,3 +62,21 @@
 | interchainAccountIsm                       | "0xE2C984a4faD8E9232D1bb0c2b9978E854cafcf21" |
 | validatorAnnounce                          | "0x158fe303274322204E5233c971CB676d768Db782" |
 | testRecipient                              | "0x67c86bDE091d6cAd2b0805048c4E63faA7E05CEE" |
+
+
+# AirDao Netowrk 
+
+
+    staticMerkleRootMultisigIsmFactory: "0xdE7bDd5E8E6b48bCBc3bf33AC1C3f0807A8407F1"
+    staticMessageIdMultisigIsmFactory: "0xAD58458d90694c0FC8cE462945bF09960426A7F5"
+    staticAggregationIsmFactory: "0x601a251c428A0DD39CfF25cEBf7D9fED7Cd2e8A9"
+    staticAggregationHookFactory: "0x9B6c06c06fFbcE76183290eb2C679D9affae65Fb"
+    domainRoutingIsmFactory: "0xF20DED5Cac2E1c0661E2F81D22F4059BB9761D40"
+    staticMerkleRootWeightedMultisigIsmFactory: "0xE2C984a4faD8E9232D1bb0c2b9978E854cafcf21"
+    staticMessageIdWeightedMultisigIsmFactory: "0xEd1190B1a6CE0CE6ea4C8EBD8c5B9C4a040daC76"
+    proxyAdmin: "0xAAB916aE240FEDaa7c569D0FB8Fc435243Ac9757"
+    mailbox: "0x3eCa02947c4E0616659E6A0Dd435a88Cfaa66d9D"
+    interchainAccountRouter: "0x0B6DBBF6Bb9A7d4D2da00f27E21cb8b640C3251C"
+    interchainAccountIsm: "0x286D526BE458F223E30dfDF3463720bdeC374792"
+    validatorAnnounce: "0xf80e25CC37582CE8B2653af3AD93f902cF333C87"
+    testRecipient: "0x13a2C109A9506b54f936724a5A318db7C5d4995e"
