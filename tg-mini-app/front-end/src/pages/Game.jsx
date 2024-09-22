@@ -16,6 +16,7 @@ export default function Game() {
     const [prizePool, setPrizePool] = useState(10000);
     const [timeLeft, setTimeLeft] = useState(300);
     const [bids, setBids] = useState([10, 10, 10]);
+    const [leverPos, setLeverPos] = useState(false)
 
     useEffect(() => {
         const timer = setTimeout(() => setIsLoading(false), 6000);
@@ -87,7 +88,7 @@ export default function Game() {
         try {
             // Simulating a blockchain transaction for placing a bid
             // In a real implementation, this would interact with the user's wallet
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const temp = await new Promise(resolve => setTimeout(resolve, 1000));
             console.log(`Placed bid of $${bids[index]} on slot ${index + 1}`);
 
             // Update prize pool
@@ -101,11 +102,17 @@ export default function Game() {
         if (isSpinning || !user) return;
         setIsSpinning(true);
         playSound(slotAudio.current);
+            setLeverPos(true)
+            // setLeverPos(false)
+            setTimeout(() => {
+                setLeverPos(false)
+            }, 600);
+            
 
         try {
             // Simulating a blockchain transaction for the spin fee
             // In a real implementation, this would interact with the user's wallet
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // await new Promise(resolve => setTimeout(resolve, 1000));
             console.log("Spin fee transaction of $1 successful");
         } catch (error) {
             console.error("Spin fee transaction failed", error);
@@ -130,16 +137,14 @@ export default function Game() {
                 // Here you would check for winning combinations and update the prize pool accordingly
             }
         }, intervalDuration);
-    };
 
-    if (isLoading) {
-        return (
-            <div style={styles.pageContainer}>
-                <div style={styles.loadingText}><Loader /></div>
-            </div>
-        );
     }
 
+    if (isLoading) {
+        return <div style={styles.pageContainer}>
+                <div style={styles.loadingText}><Loader /></div>
+            </div>
+    }
     return (
         <div style={styles.pageContainer}>
              <div style={styles.header}>
@@ -152,66 +157,68 @@ export default function Game() {
       </div>
             <h1 style={styles.title}>Hacker Slots</h1>
             <p style={styles.subtitle}>Bet on Projects and Win Big!</p>
-            <div className='max-w-[90%]'>
-            <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5 }}
-                style={styles.slotMachine}
-            >
-                <div style={styles.reelsContainer}>
-                    {results.map((result, index) => (
-                        <div key={index} style={styles.reelColumn}>
-                            <motion.div
-                                style={styles.reel}
-                                animate={isSpinning ? { rotateX: 360 } : { rotateX: 0 }}
-                                transition={{ duration: 0.5, repeat: isSpinning ? Infinity : 0 }}
-                            >
-                                <button
-                                    style={styles.reelButton}
-                                    onClick={() => window.location.href = result.url}
+            <div className='max-w-[90%] flex flex-row'>
+                <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    style={styles.slotMachine}
+                >
+                    <div style={styles.reelsContainer}>
+                        {results.map((result, index) => (
+                            <div key={index} style={styles.reelColumn}>
+                                <motion.div
+                                    style={styles.reel}
+                                    animate={isSpinning ? { rotateX: 360 } : { rotateX: 0 }}
+                                    transition={{ duration: 0.5, repeat: isSpinning ? Infinity : 0 }}
                                 >
-                                    <img
-                                        src={result.image}
-                                        alt={result.name}
-                                        style={styles.reelImage}
-                                    />
+                                    <button
+                                        style={styles.reelButton}
+                                        onClick={() => window.location.href = result.url}
+                                    >
+                                        <img
+                                            src={result.image}
+                                            alt={result.name}
+                                            style={styles.reelImage}
+                                        />
+                                    </button>
+                                </motion.div>
+                                <input
+                                    type="number"
+                                    min="10"
+                                    value={bids[index]}
+                                    onChange={(e) => handleBidChange(index, e.target.value)}
+                                    style={styles.bidInput}
+                                />
+                                <button onClick={() => placeBid(index)} style={styles.bidButton}>
+                                    Bid
                                 </button>
-                            </motion.div>
-                            <input
-                                type="number"
-                                min="10"
-                                value={bids[index]}
-                                onChange={(e) => handleBidChange(index, e.target.value)}
-                                style={styles.bidInput}
-                            />
-                            <button onClick={() => placeBid(index)} style={styles.bidButton}>
-                                Bid
-                            </button>
+                            </div>
+                        ))}
                         </div>
-                    ))}
-                </div>
-                <div style={styles.leverContainer}>
-                    <motion.button
-                        style={styles.lever}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={spin}
-                    >
-                        <motion.div
-                            style={styles.leverHandle}
-                            animate={isSpinning ? { rotateX: 45 } : { rotateX: 0 }}
-                            transition={{ duration: 0.2 }}
-                        />
-                    </motion.button>
-                    <button
-                        style={styles.claimButton}
-                        disabled={isSpinning}
-                    >
-                        Claim Winnings
-                    </button>
-                </div>
+                    <div style={styles.leverContainer}>
 
-            </motion.div>
+                        <button
+                            style={styles.claimButton}
+                            disabled={isSpinning}
+                        >
+                            Claim Winnings
+                        </button>
+                    </div>
+
+                </motion.div>
+                {/* <motion.button
+                            style={styles.lever}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={spin}
+                        >
+                            <motion.div
+                                style={styles.leverHandle}
+                                animate={isSpinning ? { rotateX: 45 } : { rotateX: 0 }}
+                                transition={{ duration: 0.2 }}
+                            />
+                </motion.button> */}
+                <img onClick={spin} src="/leverup.png" className={`z-50 w-[39px]  flex ${leverPos? "h-[45px] translate-y-[126px]": "h-[165px] translate-y-[15px]"}`}/>
             </div>
             <div style={styles.infoContainer}>
                 <div style={styles.infoBox}>
@@ -323,6 +330,7 @@ const styles = {
     },
     leverContainer: {
         display: 'flex',
+
         justifyContent: 'center',
     },
     lever: {
