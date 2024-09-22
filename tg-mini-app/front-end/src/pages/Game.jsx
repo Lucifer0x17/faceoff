@@ -149,6 +149,7 @@ export default function Game() {
         <div style={styles.pageContainer}>
             <h1 style={styles.title}>Hacker Slots</h1>
             <p style={styles.subtitle}>Bet on Projects and Win Big!</p>
+            <div className='max-w-[90%]'>
             <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -195,7 +196,7 @@ export default function Game() {
                     >
                         <motion.div
                             style={styles.leverHandle}
-                            animate={isSpinning ? { rotateZ: 45 } : { rotateZ: 0 }}
+                            animate={isSpinning ? { rotateX: 45 } : { rotateX: 0 }}
                             transition={{ duration: 0.2 }}
                         />
                     </motion.button>
@@ -208,6 +209,8 @@ export default function Game() {
                 </div>
 
             </motion.div>
+            <div>HIE</div>
+            </div>
             <div style={styles.infoContainer}>
                 <div style={styles.infoBox}>
                     <span style={styles.infoLabel}>Prize Pool:</span>
@@ -269,7 +272,7 @@ const styles = {
     slotMachine: {
         backgroundColor: '#4a4e69',
         borderRadius: '20px',
-        padding: '30px',
+        padding: '21px',
         boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
         border: '8px solid #ffd700',
         maxWidth: '90%',
