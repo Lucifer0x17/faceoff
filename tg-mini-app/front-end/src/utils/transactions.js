@@ -38,3 +38,40 @@ export const playSlot = async (primaryWallet) => {
         console.log("Error in play slot", error)
     }
 }
+
+export const placeBet = async (primaryWallet, projectId = '5') => {
+    const publicClient = await primaryWallet.getPublicClient();
+    const walletClient = await primaryWallet.getWalletClient();
+    try {
+        const { request, result } = await publicClient.simulateContract({
+            ...FlowDabContract,
+            functionName: "placeBet",
+            account: primaryWallet.address,
+            args: [parseUnits(projectId), parseUnits('10.0', 6)]
+        })
+        console.log("===>", result)
+        const hash = await walletClient.writeContract(request)
+        console.log(hash)
+        return { hash, result }
+    } catch (error) {
+        console.log("Error in play slot", error)
+    }
+}
+
+export const claimWinnings = async (primaryWallet) => {
+    const publicClient = await primaryWallet.getPublicClient();
+    const walletClient = await primaryWallet.getWalletClient();
+    try {
+        const { request, result } = await publicClient.simulateContract({
+            ...FlowDabContract,
+            functionName: "claimWinnings",
+            account: primaryWallet.address,
+        })
+        console.log("===>", result)
+        const hash = await walletClient.writeContract(request)
+        console.log(hash)
+        return { hash, result }
+    } catch (error) {
+        console.log("Error in play slot", error)
+    }
+}

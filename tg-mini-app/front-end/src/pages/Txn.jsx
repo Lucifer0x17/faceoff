@@ -2,7 +2,7 @@
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isEthereumWallet } from "@dynamic-labs/ethereum";
 import { useState } from 'react';
-import { approveUsdc, playSlot } from '../utils/transactions';
+import { approveUsdc, claimWinnings, placeBet, playSlot } from '../utils/transactions';
 
 // const Txn = () => {
 //     const {primaryWallet} = useDynamicContext()
@@ -70,7 +70,7 @@ const Txn = () => {
         // const hash = await approveUsdc(primaryWallet)
 
         // console.log("===============",hash)
-        const hash2 = await playSlot(primaryWallet)
+        const hash2 = await claimWinnings(primaryWallet)
         console.log(hash2)
 
         // const transaction = {
