@@ -63,9 +63,9 @@ export default function Game() {
             setProjects(data);
             setResults(Array(3).fill().map(() => data[Math.floor(Math.random() * data.length)]));
         })
-        .catch((error) => {
-            console.log(error)
-        });
+            .catch((error) => {
+                console.log(error)
+            });
 
     }, []);
 
@@ -135,7 +135,7 @@ export default function Game() {
     if (isLoading) {
         return (
             <div style={styles.pageContainer}>
-                <div style={styles.loadingText}><Loader/></div>
+                <div style={styles.loadingText}><Loader /></div>
             </div>
         );
     }
@@ -158,11 +158,16 @@ export default function Game() {
                                 animate={isSpinning ? { rotateX: 360 } : { rotateX: 0 }}
                                 transition={{ duration: 0.5, repeat: isSpinning ? Infinity : 0 }}
                             >
-                                <img
-                                    src={result.image}
-                                    alt={result.name}
-                                    style={styles.reelImage}
-                                />
+                                <button
+                                    style={styles.reelButton}
+                                    onClick={() => window.location.href = result.url}
+                                >
+                                    <img
+                                        src={result.image}
+                                        alt={result.name}
+                                        style={styles.reelImage}
+                                    />
+                                </button>
                             </motion.div>
                             <input
                                 type="number"
@@ -204,7 +209,7 @@ export default function Game() {
                     <span style={styles.infoValue}>${prizePool.toLocaleString()}</span>
                 </div>
                 <div style={styles.infoBox}>
-                    <span style={styles.infoLabel}>Next Spin In:</span>
+                    <span style={styles.infoLabel}>Betting Ends In:</span>
                     <span style={styles.infoValue}>
                         {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
                     </span>
@@ -224,7 +229,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent:"center",
+        justifyContent: "center",
         minHeight: '100vh',
         backgroundColor: '#1a1a2e',
         padding: '20px',
@@ -239,14 +244,14 @@ const styles = {
         textShadow: '2px 2px #ff0000',
     },
     title: {
-        fontSize: '4rem',
+        fontSize: '27px',
         color: '#ffd700',
         textShadow: '4px 4px #ff0000',
         marginBottom: '20px',
         textAlign: 'center',
     },
     subtitle: {
-        fontSize: '1.8rem',
+        fontSize: '21px',
         color: '#00ff00',
         marginBottom: '30px',
         textAlign: 'center',
@@ -356,16 +361,16 @@ const styles = {
         borderRadius: '5px',
     },
     claimButton: {
-        marginTop: '30px', 
-        padding: '8px 20px',     
-        backgroundColor: '#FF6347',  
-        color: '#fff',             
-        border: 'none',              
-        borderRadius: '30px',    
-        cursor: 'pointer',         
-        fontSize: '16px',           
-        transition: 'background-color 0.3s ease', 
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', 
+        marginTop: '30px',
+        padding: '8px 20px',
+        backgroundColor: '#FF6347',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '30px',
+        cursor: 'pointer',
+        fontSize: '16px',
+        transition: 'background-color 0.3s ease',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     },
     bidButton: {
         width: '80px',
@@ -382,4 +387,11 @@ const styles = {
             backgroundColor: '#5a5e79',
         },
     },
+    reelButton: {
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        outline: 'none',
+    }
 };
