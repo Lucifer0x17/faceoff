@@ -202,6 +202,7 @@ export default function Game() {
                                             alt={result.name}
                                             style={styles.reelImage}
                                         />
+                                        <h5 className=' text-[9px] capitalize text-[#000000]'>{result.name}</h5>
                                     </button>
                                 </motion.div>
                                 <input
@@ -239,7 +240,7 @@ export default function Game() {
                                 transition={{ duration: 0.2 }}
                             />
                 </motion.button> */}
-                <img onClick={spin} src="/leverup.png" className={`z-50 w-[39px]  flex ${leverPos? "h-[45px] translate-y-[126px]": "h-[165px] translate-y-[15px]"}`}/>
+                <img onClick={spin} src="/leverup.png" className={`z-50 w-[39px] hover:cursor-pointer flex ${leverPos? "h-[45px] translate-y-[126px]": "h-[165px] translate-y-[15px]"}`}/>
             </div>
             <div style={styles.infoContainer}>
                 <div style={styles.infoBox}>
