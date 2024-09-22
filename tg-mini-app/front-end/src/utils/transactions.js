@@ -39,7 +39,7 @@ export const playSlot = async (primaryWallet) => {
     }
 }
 
-export const placeBet = async (primaryWallet, projectId = '5') => {
+export const placeBet = async (primaryWallet, projectId = '5', amount = '10.0') => {
     const publicClient = await primaryWallet.getPublicClient();
     const walletClient = await primaryWallet.getWalletClient();
     try {
@@ -47,7 +47,7 @@ export const placeBet = async (primaryWallet, projectId = '5') => {
             ...FlowDabContract,
             functionName: "placeBet",
             account: primaryWallet.address,
-            args: [parseUnits(projectId), parseUnits('10.0', 6)]
+            args: [parseUnits(projectId), parseUnits(amount, 6)]
         })
         console.log("===>", result)
         const hash = await walletClient.writeContract(request)

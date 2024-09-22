@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, wrap } from 'framer-motion';
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import Loader from '../components/Loader';
+import { approveUsdc, placeBet, playSlot } from '../utils/transactions';
 
 export default function Game() {
     const [projects, setProjects] = useState([]);
     const [results, setResults] = useState([]);
     const [isSpinning, setIsSpinning] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const { user } = useDynamicContext();
+    const { user,primaryWallet } = useDynamicContext();
     const [audioInitialized, setAudioInitialized] = useState(false);
     const audioContext = useRef(null);
     const slotAudio = useRef(null);
@@ -16,6 +17,10 @@ export default function Game() {
     const [prizePool, setPrizePool] = useState(10000);
     const [timeLeft, setTimeLeft] = useState(300);
     const [bids, setBids] = useState([10, 10, 10]);
+    const [randomNumbers, setRandomNumbers] = useState([0, 1, 2])
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
 
     useEffect(() => {
         const timer = setTimeout(() => setIsLoading(false), 6000);
@@ -85,6 +90,7 @@ export default function Game() {
     const placeBid = async (index) => {
         if (!user) return;
         try {
+            const txHash = await placeBet(primaryWallet,)
             // Simulating a blockchain transaction for placing a bid
             // In a real implementation, this would interact with the user's wallet
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -103,9 +109,20 @@ export default function Game() {
         playSound(slotAudio.current);
 
         try {
-            // Simulating a blockchain transaction for the spin fee
-            // In a real implementation, this would interact with the user's wallet
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const txnHash = await approveUsdc(primaryWallet)
+            if(!txnHash) throw "Error"
+        console.log("===============",txnHash)
+        const {hash,result} = await playSlot(primaryWallet)
+        console.log(hash,"=== play slot",result)
+        // for(let i = 0; i <3; i++)
+        // {
+            
+        //     console.log(parseInt(i));
+        //     const bigNum = BigNumber.from("123456789"); // Example BigNumber
+        //     const normalNumber = bigNum.toNumber();
+        // }        
+        setRandomNumbers(result);
+        //     await new Promise(resolve => setTimeout(resolve, 1000));
             console.log("Spin fee transaction of $1 successful");
         } catch (error) {
             console.error("Spin fee transaction failed", error);
@@ -122,8 +139,12 @@ export default function Game() {
 
             if (Date.now() - startTime >= spinDuration) {
                 clearInterval(spinInterval);
-                let random_numbers = Math.floor(Math.random() * projects.length);
-                const finalResults = Array(3).fill().map(() => projects[random_numbers]);
+                // let random_numbers = Math.floor(Math.random() * projects.length);
+                let finalResults = [];
+                finalResults.push(projects[randomNumbers[0]])
+                finalResults.push(projects[randomNumbers[1]])
+                finalResults.push(projects[randomNumbers[2]])
+
                 setResults(finalResults);
                 setIsSpinning(false);
                 playSound(winAudio.current);
@@ -247,7 +268,6 @@ const styles = {
         fontFamily: '"Press Start 2P", cursive',
         color: '#ffffff',
         imageRendering: 'pixelated',
-        boxSizing: 'border-box',
         backgroundImage: 'url("/bgNouns.png")', // Add your image URL here
         backgroundSize: 'cover', // Ensures the image covers the entire container
         backgroundPosition: 'center', // Centers the background image
