@@ -142,6 +142,14 @@ export default function Game() {
 
     return (
         <div style={styles.pageContainer}>
+             <div style={styles.header}>
+        <img src="/logo.svg" alt="Logo" style={styles.logo} />
+      
+        <div style={styles.authWidgets}>
+          {/* <WorldCoinBtn /> */}
+          <DynamicWidget />
+        </div>
+      </div>
             <h1 style={styles.title}>Hacker Slots</h1>
             <p style={styles.subtitle}>Bet on Projects and Win Big!</p>
             <div className='max-w-[90%]'>
@@ -204,7 +212,6 @@ export default function Game() {
                 </div>
 
             </motion.div>
-            <div>HIE</div>
             </div>
             <div style={styles.infoContainer}>
                 <div style={styles.infoBox}>
@@ -255,7 +262,7 @@ const styles = {
         fontSize: '27px',
         color: '#ffd700',
         textShadow: '4px 4px #ff0000',
-        marginBottom: '20px',
+        marginBottom: '6px',
         textAlign: 'center',
     },
     subtitle: {
@@ -273,6 +280,24 @@ const styles = {
         maxWidth: '90%',
         width: '600px',
     },
+    header: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: '0px',
+      },
+      logo: {
+        width: '210px',
+        height: 'auto',
+        paddingBottom: "6px"
+      },
+      authWidgets: {
+        display: 'flex',
+        gap: '10px',
+        paddingBottom:"24px"
+      },
     reelsContainer: {
         display: 'flex',
         justifyContent: 'space-around',
