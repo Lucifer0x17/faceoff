@@ -1,0 +1,19 @@
+{
+  "name": "contracts",
+  "version": "1.0.0",
+  "description": "| Contract                                   | Address                                      | | ------------------------------------------ | -------------------------------------------- | | BasicUSDC                                  | 0xc769CAf97b6b8011381f8E257c5517010a24AB6f   | | DAB                                        | 0x91aD54a175E410c1e7eC1941C091D800A6B158bc   | | NFT                                        | 0x1379b3439b462314fB6545E55CeE8d78b8Da48Cb   | | staticMerkleRootMultisigIsmFactory         | \"0x997997CCEf8ce335A0D51f535BDF750641d6Cb7E\" | | staticMessageIdMultisigIsmFactory          | \"0x7006e93468d4fA4c5f2d968f8aB667d73C0dCdBb\" | | staticAggregationIsmFactory                | \"0xFA9d7C3C5ab6A78006b43182AD87D80aeBB8efDf\" | | staticAggregationHookFactory               | \"0xa9F596AfB79bc9fC4748968379371dAbBb24f665\" | | domainRoutingIsmFactory                    | \"0xa6251c4dFF7120508c90ef21447DBcC321dF8a57\" | | staticMerkleRootWeightedMultisigIsmFactory | \"0xedDfBA627f92F32EE2Fe2a8035C2a7152DE83244\" | | staticMessageIdWeightedMultisigIsmFactory  | \"0xe7BAd80AE9F6d5d7ede6dEd3e73dB4f29B95ef8a\" | | proxyAdmin                                 | \"0xAB1Fc866407149D164B8e8909ae46029458b640d\" | | mailbox                                    | \"0xAD58458d90694c0FC8cE462945bF09960426A7F5\" | | interchainAccountRouter                    | \"0x158fe303274322204E5233c971CB676d768Db782\" | | interchainAccountIsm                       | \"0xEd1190B1a6CE0CE6ea4C8EBD8c5B9C4a040daC76\" | | validatorAnnounce                          | \"0x67c86bDE091d6cAd2b0805048c4E63faA7E05CEE\" | | testRecipient                              | \"0xa61B779A062F31Be462E8E2F3bDD311308EBb2A6\" |",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pythnetwork/entropy-sdk-solidity": "^1.5.0"
+  }
+}
