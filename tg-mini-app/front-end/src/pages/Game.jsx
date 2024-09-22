@@ -52,7 +52,7 @@ export default function Game() {
     }, [audioInitialized]);
 
     useEffect(() => {
-        fetch("https://7b49-223-255-254-102.ngrok-free.app/api/projects").then(
+        fetch("http://localhost:5001").then(
             (response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

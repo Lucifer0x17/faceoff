@@ -74,14 +74,14 @@ const AppContent = () => {
         };
 
         try {
-          const response = await fetch("http://localhost:5005/api/public_v1/set-name", requestOptions);
+          const response = await fetch("https://namestone.xyz/api/public_v1/set-name", requestOptions);
           await response.text();
         } catch (error) {
           console.error('Error:', error);
         }
         
       };
-      setENSSubdomain();
+      // setENSSubdomain();
   }, [user]);
 
 
