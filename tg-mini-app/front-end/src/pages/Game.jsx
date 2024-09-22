@@ -1,17 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, wrap } from 'framer-motion';
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import Loader from '../components/Loader';
 
 export default function Game() {
-    const projectSymbols = [
-        { name: 'React', logo: '/react-logo.png' },
-        { name: 'Vue', logo: '/vue-logo.png' },
-        { name: 'Angular', logo: '/angular-logo.png' },
-        { name: 'Svelte', logo: '/svelte-logo.png' },
-        { name: 'Next.js', logo: '/nextjs-logo.png' },
-    ];
-    const [results, setResults] = useState(Array(3).fill(projectSymbols[0]));
+    const [projects, setProjects] = useState([]);
+    const [results, setResults] = useState([]);
     const [isSpinning, setIsSpinning] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const { user } = useDynamicContext();
@@ -56,6 +50,24 @@ export default function Game() {
             }
         };
     }, [audioInitialized]);
+
+    useEffect(() => {
+        fetch("https://7b49-223-255-254-102.ngrok-free.app/api/projects").then(
+            (response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }
+        ).then((data) => {
+            setProjects(data);
+            setResults(Array(3).fill().map(() => data[Math.floor(Math.random() * data.length)]));
+        })
+            .catch((error) => {
+                console.log(error)
+            });
+
+    }, []);
 
     const playSound = (audio) => {
         if (audio && audioInitialized) {
@@ -106,11 +118,12 @@ export default function Game() {
 
         const startTime = Date.now();
         const spinInterval = setInterval(() => {
-            setResults(prev => prev.map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]));
+            setResults(prev => prev.map(() => projects[Math.floor(Math.random() * projects.length)]));
 
             if (Date.now() - startTime >= spinDuration) {
                 clearInterval(spinInterval);
-                const finalResults = Array(3).fill().map(() => projectSymbols[Math.floor(Math.random() * projectSymbols.length)]);
+                let random_numbers = Math.floor(Math.random() * projects.length);
+                const finalResults = Array(3).fill().map(() => projects[random_numbers]);
                 setResults(finalResults);
                 setIsSpinning(false);
                 playSound(winAudio.current);
@@ -122,15 +135,24 @@ export default function Game() {
     if (isLoading) {
         return (
             <div style={styles.pageContainer}>
-                <div style={styles.loadingText}><Loader/></div>
+                <div style={styles.loadingText}><Loader /></div>
             </div>
         );
     }
 
     return (
         <div style={styles.pageContainer}>
+             <div style={styles.header}>
+        <img src="/logo.svg" alt="Logo" style={styles.logo} />
+      
+        <div style={styles.authWidgets}>
+          {/* <WorldCoinBtn /> */}
+          <DynamicWidget />
+        </div>
+      </div>
             <h1 style={styles.title}>Hacker Slots</h1>
             <p style={styles.subtitle}>Bet on Projects and Win Big!</p>
+            <div className='max-w-[90%]'>
             <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -145,11 +167,16 @@ export default function Game() {
                                 animate={isSpinning ? { rotateX: 360 } : { rotateX: 0 }}
                                 transition={{ duration: 0.5, repeat: isSpinning ? Infinity : 0 }}
                             >
-                                <img
-                                    src={result.logo}
-                                    alt={result.name}
-                                    style={styles.reelImage}
-                                />
+                                <button
+                                    style={styles.reelButton}
+                                    onClick={() => window.location.href = result.url}
+                                >
+                                    <img
+                                        src={result.image}
+                                        alt={result.name}
+                                        style={styles.reelImage}
+                                    />
+                                </button>
                             </motion.div>
                             <input
                                 type="number"
@@ -172,7 +199,7 @@ export default function Game() {
                     >
                         <motion.div
                             style={styles.leverHandle}
-                            animate={isSpinning ? { rotateZ: 45 } : { rotateZ: 0 }}
+                            animate={isSpinning ? { rotateX: 45 } : { rotateX: 0 }}
                             transition={{ duration: 0.2 }}
                         />
                     </motion.button>
@@ -185,13 +212,14 @@ export default function Game() {
                 </div>
 
             </motion.div>
+            </div>
             <div style={styles.infoContainer}>
                 <div style={styles.infoBox}>
                     <span style={styles.infoLabel}>Prize Pool:</span>
                     <span style={styles.infoValue}>${prizePool.toLocaleString()}</span>
                 </div>
                 <div style={styles.infoBox}>
-                    <span style={styles.infoLabel}>Next Spin In:</span>
+                    <span style={styles.infoLabel}>Betting Ends In:</span>
                     <span style={styles.infoValue}>
                         {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
                     </span>
@@ -211,7 +239,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent:"center",
+        justifyContent: "center",
         minHeight: '100vh',
         backgroundColor: '#1a1a2e',
         padding: '20px',
@@ -219,6 +247,11 @@ const styles = {
         fontFamily: '"Press Start 2P", cursive',
         color: '#ffffff',
         imageRendering: 'pixelated',
+        boxSizing: 'border-box',
+        backgroundImage: 'url("/bgNouns.png")', // Add your image URL here
+        backgroundSize: 'cover', // Ensures the image covers the entire container
+        backgroundPosition: 'center', // Centers the background image
+        backgroundRepeat: 'no-repeat', // Prevents the image from repeating
     },
     loadingText: {
         fontSize: '2rem',
@@ -226,14 +259,14 @@ const styles = {
         textShadow: '2px 2px #ff0000',
     },
     title: {
-        fontSize: '4rem',
+        fontSize: '27px',
         color: '#ffd700',
         textShadow: '4px 4px #ff0000',
-        marginBottom: '20px',
+        marginBottom: '6px',
         textAlign: 'center',
     },
     subtitle: {
-        fontSize: '1.8rem',
+        fontSize: '21px',
         color: '#00ff00',
         marginBottom: '30px',
         textAlign: 'center',
@@ -241,12 +274,30 @@ const styles = {
     slotMachine: {
         backgroundColor: '#4a4e69',
         borderRadius: '20px',
-        padding: '30px',
+        padding: '21px',
         boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
         border: '8px solid #ffd700',
         maxWidth: '90%',
         width: '600px',
     },
+    header: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: '0px',
+      },
+      logo: {
+        width: '210px',
+        height: 'auto',
+        paddingBottom: "6px"
+      },
+      authWidgets: {
+        display: 'flex',
+        gap: '10px',
+        paddingBottom:"24px"
+      },
     reelsContainer: {
         display: 'flex',
         justifyContent: 'space-around',
@@ -301,7 +352,7 @@ const styles = {
     infoBox: {
         backgroundColor: '#4a4e69',
         borderRadius: '10px',
-        padding: '15px',
+        padding: '12px',
         border: '4px solid #ffd700',
         display: 'flex',
         flexDirection: 'column',
@@ -309,12 +360,12 @@ const styles = {
         width: '45%',
     },
     infoLabel: {
-        fontSize: '1.2rem',
+        fontSize: '12px',
         color: '#00ff00',
         marginBottom: '10px',
     },
     infoValue: {
-        fontSize: '1.8rem',
+        fontSize: '18px',
         color: '#ffd700',
         textShadow: '2px 2px #ff0000',
     },
@@ -343,16 +394,16 @@ const styles = {
         borderRadius: '5px',
     },
     claimButton: {
-        marginTop: '30px', 
-        padding: '8px 20px',     
-        backgroundColor: '#FF6347',  
-        color: '#fff',             
-        border: 'none',              
-        borderRadius: '30px',    
-        cursor: 'pointer',         
-        fontSize: '16px',           
-        transition: 'background-color 0.3s ease', 
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', 
+        marginTop: '30px',
+        padding: '8px 20px',
+        backgroundColor: '#FF6347',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '30px',
+        cursor: 'pointer',
+        fontSize: '16px',
+        transition: 'background-color 0.3s ease',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     },
     bidButton: {
         width: '80px',
@@ -369,4 +420,11 @@ const styles = {
             backgroundColor: '#5a5e79',
         },
     },
+    reelButton: {
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        outline: 'none',
+    }
 };
