@@ -69,7 +69,7 @@ contract XPPlugin is IXPPlugin, Plugin, ERC20 {
     }
 
     function _updateRewards(address account) internal {
-        uint256 balance = balanceOf(account);
+        uint256 balance = IERC20Plugins(token).pluginBalanceOf(address(this), msg.sender);
         uint256 lastTime = lastUpdateTime[account];
 
         uint256 timePassed = block.timestamp - lastTime;
