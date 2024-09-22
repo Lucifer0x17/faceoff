@@ -85,18 +85,24 @@ contract Flow_DABTest is Test {
 
     function test_submitWinningProjects() public _betSetup {
         uint256[] memory winningProjects = new uint256[](2);
-        winningProjects[0] = 1;
-        winningProjects[1] = 3;
+        winningProjects[0] = 0;
+        winningProjects[1] = 2;
         flowDAB.submitWinningProjects(winningProjects);
 
         console2.log("Winning projects submitted");
         uint256 winnerPerProject = flowDAB.s_winningAmountPerProject();
-        console2.log("Amount per project: ", winnerPerProject);
+        assertEq(winnerPerProject, (95000 * 1e18 * 1e6));
     }
 
     function test_claimWinnings() public _betSetup {
+        uint256 balanceBefore = usdc.balanceOf(i_UserA);
+
         vm.startPrank(i_UserA);
         flowDAB.claimWinnings();
         vm.stopPrank();
+
+        uint256 balanceAfter = usdc.balanceOf(i_UserA);
+
+        assertEq(balanceAfter, balanceBefore + 95000 * 1e18 * 1e6);
     }
 }

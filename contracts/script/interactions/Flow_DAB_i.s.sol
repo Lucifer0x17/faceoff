@@ -47,3 +47,83 @@ contract PlaySlot is Script {
         playSlotUsingConfigs();
     }
 }
+
+contract PlaceBet is Script {
+    Flow_DAB flowDAB;
+    uint256 usdc_denomination;
+
+    uint256 BET_AMOUNT = 1_000;
+
+    function placeBet() public {
+        vm.startBroadcast();
+        flowDAB.placeBet(1, (usdc_denomination * BET_AMOUNT));
+        vm.stopBroadcast();
+    }
+
+    function placeBetUsingConfigs() public {
+        HelperConfig helper = new HelperConfig();
+        address dabAddress = helper.getFlowDAB();
+        usdc_denomination = helper.USDC_DENOMINATION();
+
+        flowDAB = Flow_DAB(dabAddress);
+
+        console2.log("DAB Address: ", dabAddress);
+    }
+
+    function run() public {
+        placeBetUsingConfigs();
+    }
+}
+
+contract ClaimWinning is Script {
+    Flow_DAB flowDAB;
+
+    function claimWinningUsingConfigs() public {
+        HelperConfig helper = new HelperConfig();
+        address dabAddress = helper.getFlowDAB();
+        flowDAB = Flow_DAB(dabAddress);
+
+        flowDAB.claimWinnings();
+
+        console2.log("DAB Address: ", dabAddress);
+    }
+
+    function run() public {
+        claimWinningUsingConfigs();
+    }
+}
+
+contract CheckAllProjects is Script {
+    Flow_DAB flowDAB;
+
+    struct ProjectItem {
+        uint256 projectId;
+        uint256 collectedAmount;
+    }
+
+    function checkAllProjects() public {
+        vm.startBroadcast();
+        Flow_DAB.ProjectItem[] memory collectedAmount = flowDAB.getAllProjects();
+
+        vm.stopBroadcast();
+
+        for (uint256 i = 0; i < collectedAmount.length; i++) {
+            console2.log("Project ID: ", collectedAmount[i].projectId);
+            console2.log("Collected Amount: ", collectedAmount[i].totalCollectedAmt);
+        }
+    }
+
+    function checkAllProjectsUsingConfigs() public {
+        HelperConfig helper = new HelperConfig();
+        address dabAddress = helper.getFlowDAB();
+        flowDAB = Flow_DAB(dabAddress);
+
+        console2.log("DAB Address: ", dabAddress);
+
+        checkAllProjects();
+    }
+
+    function run() public {
+        checkAllProjectsUsingConfigs();
+    }
+}

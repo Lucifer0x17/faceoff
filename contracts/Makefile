@@ -46,7 +46,7 @@ ifeq ($(findstring --network morph,$(ARGS)),--network morph)
 endif
 
 ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
-	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY)
+	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast 
 endif
 
 ifeq ($(findstring --network fuji,$(ARGS)),--network fuji)
@@ -62,7 +62,7 @@ ifeq ($(findstring --network baseGoerli,$(ARGS)),--network baseGoerli)
 endif
 
 ifeq ($(findstring --network linea,$(ARGS)),--network linea)
-	NETWORK_ARGS := --rpc-url $(LINEA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(LINEA_SCAN_API_KEY)
+	NETWORK_ARGS := --rpc-url $(LINEA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
 endif
 
 ifeq ($(findstring --network scrollSepolia,$(ARGS)),--network scrollSepolia)
@@ -98,6 +98,12 @@ mintUSDCToAddress:
 
 playSlot:
 	@forge script script/interactions/Flow_DAB_i.s.sol:PlaySlot $(NETWORK_ARGS)
+
+deployNFT:
+	@forge script script/DeployNFT.s.sol:DeployNFT $(NETWORK_ARGS)
+
+checkAllProjects:
+	@forge script script/interactions/Flow_DAB_i.s.sol:CheckAllProjects $(NETWORK_ARGS)
 
 approveUSDCToTreasury:
 	@forge script script/interactions/BasicUSDC_i.s.sol:ApproveUSDCToTreasury $(NETWORK_ARGS)
