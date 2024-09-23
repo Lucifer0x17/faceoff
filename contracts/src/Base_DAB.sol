@@ -56,6 +56,7 @@ contract Base_DAB is IEntropy {
     uint32 public constant BET_AMOUNT = 1_000_000;
     address public constant CADENCE_ARCH = 0x0000000000000000000000010000000000000001;
     address public immutable i_USDC;
+    address public constant ENTROPY_ADDRESS = 0x41c9e39574F40Ad34c79f1C99B66A45eFB830d4c;
 
     mapping(uint256 projectId => Project) public s_projects;
     mapping(address bettor => Bettor) public s_bettors;
@@ -70,11 +71,10 @@ contract Base_DAB is IEntropy {
 
     ProjectItem[] public s_topProjects;
 
-    IEntropy entropy;
+    IEntropy entropy = IEntropy(ENTROPY_ADDRESS);
 
-    constructor(address _USDC, address _entropy, uint256 _s_totalNoOfProjects) {
+    constructor(address _USDC, uint256 _s_totalNoOfProjects) {
         i_USDC = _USDC;
-        entropy = IEntropy(_entropy);
         s_totalNoOfProjects = _s_totalNoOfProjects;
     }
 
@@ -154,7 +154,11 @@ contract Base_DAB is IEntropy {
 
         emit DAB_Played();
 
-        return (randomNumber(), randomNumber(), randomNumber());
+        return (
+            randomNumber(bytes32(block.timestamp)),
+            randomNumber(bytes32(block.timestamp)),
+            randomNumber(bytes32(block.timestamp))
+        );
     }
 
     function placeBet(uint256 _projectId, uint256 _betAmt) external payable checkBetAmount(_betAmt) {
@@ -181,7 +185,7 @@ contract Base_DAB is IEntropy {
         return false;
     }
 
-    function getEntropy() internal view override returns (address) {
+    function getEntropy() internal view returns (address) {
         return address(entropy);
     }
 
@@ -191,7 +195,7 @@ contract Base_DAB is IEntropy {
         // distinguish which one is calling the app back.
         address provider,
         bytes32 randomNumber
-    ) internal override {
+    ) internal {
         // Implement your callback logic here.
     }
 
@@ -284,9 +288,13 @@ contract Base_DAB is IEntropy {
         }
     }
 
-    function randomNumber() public view returns (uint64) {
+    function randomNumber(bytes32 _input) public view returns (uint64) {
+        address provider = entropy.getDefaultProvider();
+
         uint256 fee = entropy.getFee(provider);
-        uint64 sequenceNumber = entropy.requestWithCallback{value: fee}(provider, randomNumber);
+        uint64 sequenceNumber = entropy.requestWithCallback{value: fee}(provider, _input);
+
+        return sequenceNumber;
     }
 
     function _getPooledAmountForBettor(uint256 _projectId, address _bettor) private view returns (uint256) {
