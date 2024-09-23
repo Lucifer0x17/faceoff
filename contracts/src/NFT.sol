@@ -7,8 +7,15 @@ contract NFT is ERC721 {
 
     constructor() ERC721("DAB", "DAB") {}
 
+    function mint(address _to, uint256 _tokenId) public {
+        _ownerOf[_tokenId] = _to;
+        _balanceOf[_to]++;
+        emit Transfer(address(0), _to, _tokenId);
+    }
+
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
-        return "https://api.dab.com/nft/1";
+        return
+        "https://harlequin-occasional-lobster-427.mypinata.cloud/ipfs/QmW3E7h2KXFUcg2drThSVLoh5FsPd71LezQQaSPD7V6e4d";
     }
 
     // alignment preserving cast
