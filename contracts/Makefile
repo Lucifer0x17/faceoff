@@ -49,16 +49,16 @@ ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
 	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast 
 endif
 
-ifeq ($(findstring --network fuji,$(ARGS)),--network fuji)
-	NETWORK_ARGS := --rpc-url $(FUJI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(SNOWTRACE_API_KEY)
+ifeq ($(findstring --network airdao,$(ARGS)),--network airdao)
+	NETWORK_ARGS := --rpc-url $(AIRDAO_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
 endif
 
 ifeq ($(findstring --network zkevmTestnet,$(ARGS)),--network zkevmTestnet)
 	NETWORK_ARGS := --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY)
 endif
 
-ifeq ($(findstring --network baseGoerli,$(ARGS)),--network baseGoerli)
-	NETWORK_ARGS := --rpc-url $(BASE_GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(BASE_SCAN_API_KEY)
+ifeq ($(findstring --network baseSepolia,$(ARGS)),--network baseSepolia)
+	NETWORK_ARGS := --rpc-url $(BASE_SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) 
 endif
 
 ifeq ($(findstring --network linea,$(ARGS)),--network linea)

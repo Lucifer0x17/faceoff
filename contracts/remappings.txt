@@ -6,6 +6,4 @@ foundry-devops/=lib/foundry-devops/
 erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/
 openzeppelin-contracts/=lib/openzeppelin-contracts/
 token-plugins/=lib/token-plugins/contracts/
-@pythnetwork/entropy-sdk-solidity/=node_modules/@pythnetwork/entropy-sdk-solidity
-
-
+@pythnetwork/entropy-sdk-solidity/=node_modules/@pythnetwork/entropy-sdk-solidity/

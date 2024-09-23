@@ -12,6 +12,7 @@ contract HelperConfig is Script {
 
     uint256 public constant FLOW_CHAIN_ID = 545;
     uint256 public constant MORPH_CHAIN_ID = 2810;
+    uint256 public constant BASE_CHAIN_ID = 84532;
     uint256 public constant USDC_DENOMINATION = 1e6;
     uint256 public constant FEE_AMOUNT = 1e5;
     uint256 public constant NO_OF_PROJECTS = 20;
@@ -32,6 +33,11 @@ contract HelperConfig is Script {
 
     function getFlowDAB() public view returns (address) {
         address dab = DevOpsTools.get_most_recent_deployment("Flow_DAB", FLOW_CHAIN_ID);
+        return dab;
+    }
+
+    function getBaseDAB() public view returns (address) {
+        address dab = DevOpsTools.get_most_recent_deployment("Base_DAB", BASE_CHAIN_ID);
         return dab;
     }
 }
